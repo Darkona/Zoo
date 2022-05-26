@@ -10,6 +10,8 @@ import com.darkona.zoo.world.World;
 import java.awt.*;
 import java.util.Random;
 
+import static com.darkona.zoo.Main.ENABLE_LOG;
+
 public class Fox extends Animal implements Walker {
 
     private final Random r = new Random();
@@ -23,28 +25,28 @@ public class Fox extends Animal implements Walker {
     }
 
     private void generateRandomDestination() {
-        System.out.println("Generating new destination.");
+        if(ENABLE_LOG)System.out.println("Generating new destination.");
         int x = r.nextInt(world.getSize().width);
         int y = r.nextInt(world.getSize().height);
         if (world.getField()[x][y].canPutAnimal(this) > -1) {
             destination = new Coordinates(x, y);
-            System.out.println("Found new destination " + destination);
+            if(ENABLE_LOG)System.out.println("Found new destination " + destination);
         }
     }
 
     @Override
     public void update() {
-        System.out.println("Updating " + this);
+        if(ENABLE_LOG) System.out.println("Updating " + this);
         if (destination != null) {
-            System.out.println("Trying to move to destination " + destination);
+            if(ENABLE_LOG)System.out.println("Trying to move to destination " + destination);
             move(world, destination);
         }
         if (position.equals(destination)) {
-            System.out.println("Already at destination. Position: " + position + " and destination: " + destination);
+            if(ENABLE_LOG) System.out.println("Already at destination. Position: " + position + " and destination: " + destination);
             destination = null;
         }
         if (destination == null) {
-            System.out.println("No destination.");
+            if(ENABLE_LOG)System.out.println("No destination.");
             generateRandomDestination();
         }
     }
@@ -82,7 +84,7 @@ public class Fox extends Animal implements Walker {
             int movY = !m ? mov.getDy() : 0;
 
             if (world.getField()[position.x + mov.getDx()][position.y + mov.getDy()].canPutAnimal(this) > -1){
-                System.out.println("Movement: " + mov + " -- Future coords are" + new Coordinates(position.x, position.y));
+                if(ENABLE_LOG) System.out.println("Movement: " + mov + " -- Future coords are" + new Coordinates(position.x, position.y));
                 Coordinates oldPos = new Coordinates(position.x, position.y);
                 position.translate(movX, movY);
                 world.moveThing(this, oldPos);

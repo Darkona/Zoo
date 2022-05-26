@@ -2,9 +2,9 @@ package com.darkona.zoo.simulation;
 
 import com.darkona.zoo.common.Coordinates;
 import com.darkona.zoo.common.Size;
-import com.darkona.zoo.common.Utils;
 import com.darkona.zoo.control.Controller;
 import com.darkona.zoo.interfaces.Renderable;
+import com.darkona.zoo.render.ImageUtils;
 import com.darkona.zoo.world.World;
 import com.darkona.zoo.world.WorldThing;
 
@@ -14,31 +14,33 @@ public class Player extends WorldThing implements Renderable {
 
     private final Controller controller;
     private final World world;
+    private final Image image;
 
     public Player(World world, Controller controller, String name){
         super(new Coordinates(5,5), new Size());
         this.controller = controller;
         this.world = world;
         this.name = name;
+        this.image = ImageUtils.loadImage("/animal/PC.png");
     }
 
     @Override
     public void update() {
         Coordinates oldPos = new Coordinates(position.x,position.y);
         boolean moved = false;
-        if(controller.isRequestingUp()){
+        if(controller.isRequestingUp() &&  position.y > 0){
             position.translate(0,-1);
             moved = true;
         }
-        if(controller.isRequestingDown()){
+        if(controller.isRequestingDown() && position.y < world.getField()[0].length){
             position.translate(0,1);
             moved = true;
         }
-        if(controller.isRequestingLeft()){
+        if(controller.isRequestingLeft() && position.x > 0){
             position.translate(-1,0);
             moved = true;
         }
-        if(controller.isRequestingRight()){
+        if(controller.isRequestingRight() && position.x < world.getField().length){
             position.translate(1,0);
             moved = true;
         }
@@ -47,12 +49,12 @@ public class Player extends WorldThing implements Renderable {
 
     @Override
     public void render(Graphics graphics) {
-        graphics.setColor(new Color(0x2176CB));
-        Utils.fillRect(graphics, this);
+      getSprite(graphics);
     }
 
     @Override
     public Image getSprite(Graphics graphics) {
-        return null;
+        ImageUtils.drawImage(image, this, graphics, 5,5, new Size(15,15));
+        return image;
     }
 }
