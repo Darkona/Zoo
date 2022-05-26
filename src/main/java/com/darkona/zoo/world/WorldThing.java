@@ -1,0 +1,28 @@
+package com.darkona.zoo.world;
+
+import com.darkona.zoo.common.Coordinates;
+import com.darkona.zoo.common.Size;
+import com.darkona.zoo.interfaces.Updatable;
+import lombok.Data;
+
+import java.awt.*;
+
+@Data
+public abstract class WorldThing implements Updatable {
+
+    protected Coordinates position;
+    protected String name;
+    protected Size size;
+    protected Image sprite;
+
+    public WorldThing(){}
+
+    public WorldThing(Coordinates position, Size size) {
+        this.position = position;
+        this.size = size;
+    }
+
+    public abstract void update();
+    public abstract Image getSprite(Graphics graphics);
+
+}
