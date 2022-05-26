@@ -32,8 +32,10 @@ public class WorldCell implements Renderable {
         random = new Random();
         if(coordinates.x < 10 && coordinates.y < 10){
             floor = new Dirt(coordinates);
-        }else {
-            switch (random.nextInt(3)) {
+        }else if(coordinates.x > 40 || coordinates.y > 40){
+            floor = new Grass(coordinates);
+        }else{
+            switch (random.nextInt(2)) {
                 case 0:
                     floor = new Grass(coordinates);
                     break;

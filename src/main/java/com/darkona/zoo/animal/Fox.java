@@ -74,7 +74,7 @@ public class Fox extends Animal implements Walker {
 
     @Override
     public void move(World world, Coordinates destination) {
-        Coordinates oldPos = new Coordinates(position.x, position.y);
+
         Movement mov = prepareDeltas(getTerrainSpeed());
         if (mov.isMovement()) {
             boolean m = r.nextBoolean();
@@ -83,6 +83,7 @@ public class Fox extends Animal implements Walker {
 
             if (world.getField()[position.x + mov.getDx()][position.y + mov.getDy()].canPutAnimal(this) > -1){
                 System.out.println("Movement: " + mov + " -- Future coords are" + new Coordinates(position.x, position.y));
+                Coordinates oldPos = new Coordinates(position.x, position.y);
                 position.translate(movX, movY);
                 world.moveThing(this, oldPos);
             }

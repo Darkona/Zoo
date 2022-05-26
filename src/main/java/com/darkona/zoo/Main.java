@@ -6,7 +6,7 @@ import com.darkona.zoo.simulation.Simulation;
 
 public class Main {
     public static final boolean PRINT_FPS = false;
-    public static final int rate = 1;
+    public static final int rate = 4;
 
     public static void main(String[] args) {
         Size size = new Size(50,50);

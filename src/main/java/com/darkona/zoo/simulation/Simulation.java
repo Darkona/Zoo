@@ -20,7 +20,7 @@ public class Simulation {
     private Display display;
     private World world;
     private Input input;
-    private final int amountOfFoxes = 1;
+    private final int amountOfFoxes = 5;
     public static  final int SCALE = 10;
 
     public Simulation(Size size){
