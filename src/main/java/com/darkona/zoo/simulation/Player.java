@@ -32,7 +32,7 @@ public class Player extends WorldThing implements Renderable {
             position.translate(0,-1);
             moved = true;
         }
-        if(controller.isRequestingDown() && position.y < world.getField()[0].length){
+        if(controller.isRequestingDown() && position.y < world.getField()[0].length - 1){
             position.translate(0,1);
             moved = true;
         }
@@ -40,7 +40,7 @@ public class Player extends WorldThing implements Renderable {
             position.translate(-1,0);
             moved = true;
         }
-        if(controller.isRequestingRight() && position.x < world.getField().length){
+        if(controller.isRequestingRight() && position.x < world.getField().length - 1){
             position.translate(1,0);
             moved = true;
         }
