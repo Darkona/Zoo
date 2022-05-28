@@ -9,13 +9,10 @@ import org.pmw.tinylog.Configurator;
 public class Main {
 
 
+    private static final int SQUARE = 30;
+
     public static void main(String[] args) {
-
-
-        Size size = new Size(50,50);
-        Simulation simulation = new Simulation(size);
-        Thread mainThread = new Thread(new Loop(simulation));
-        mainThread.start();
+        new Thread(new Loop(new Simulation(new Size(SQUARE, SQUARE)))).start();
     }
 
     private static void configureTinyLog() {

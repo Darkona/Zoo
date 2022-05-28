@@ -1,8 +1,8 @@
 package com.darkona.zoo.animal;
 
+import com.darkona.zoo.common.Coordinates;
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.interfaces.Renderable;
-import com.darkona.zoo.common.Coordinates;
 import com.darkona.zoo.world.World;
 import com.darkona.zoo.world.WorldThing;
 import lombok.Data;

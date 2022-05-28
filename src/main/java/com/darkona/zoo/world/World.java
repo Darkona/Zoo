@@ -59,12 +59,13 @@ public class World implements Updatable, Renderable{
     public void removeThingFrom(Coordinates c, WorldThing thing){
         try{
         field[c.x][c.y].remove(thing);}
-        catch (Exception e){}
+        catch (Exception e){
+            // no op
+        }
     }
 
     public boolean setAnimal(Animal a){
         return field[a.position.x][a.position.y].setAnimal(a);
-
     }
 
     public void setTerrain(Terrain t){
@@ -73,7 +74,6 @@ public class World implements Updatable, Renderable{
     }
     public void setVegetation(Vegetation v){
         field[v.position.x][v.position.x].setVegetation(v);
-
     }
 
     public void setPlayer(Player player) {

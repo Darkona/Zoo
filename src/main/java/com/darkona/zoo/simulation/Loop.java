@@ -2,6 +2,7 @@ package com.darkona.zoo.simulation;
 
 import com.darkona.zoo.Configuration;
 import lombok.Data;
+import org.pmw.tinylog.Logger;
 
 
 @Data
@@ -10,7 +11,6 @@ public class Loop implements Runnable{
     private final Simulation simulation;
     private final Configuration configuration = Configuration.getInstance();
     private boolean running;
-
     private final double updateRate = 1.0d/configuration.getRate();
     private final double renderRate = 1.0d/120.0d;
     private long nextStatTime;
@@ -40,17 +40,14 @@ public class Loop implements Runnable{
                 }
                 render();
             }
-
             printStats();
         }
-
     }
 
     private void printStats() {
-        if(configuration.isEnableLog() && System.currentTimeMillis() > nextStatTime) {
-            System.out.printf("FPS: %d, UPS: %d%n", fps, ups);
-            fps = 0;
-            ups = 0;
+        if(configuration.isPrintStats() && System.currentTimeMillis() > nextStatTime) {
+            Logger.info(String.format("FPS: %d, UPS: %d", fps, ups));
+            fps = ups = 0;
             nextStatTime = System.currentTimeMillis() + 1000;
         }
     }
