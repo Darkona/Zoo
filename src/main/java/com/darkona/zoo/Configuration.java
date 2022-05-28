@@ -4,9 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pmw.tinylog.Logger;
 
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.util.Map;
 import java.util.Properties;
 
 @EqualsAndHashCode(callSuper = true)

@@ -6,6 +6,7 @@ import com.darkona.zoo.common.Size;
 import com.darkona.zoo.interfaces.Renderable;
 import com.darkona.zoo.interfaces.Updatable;
 import com.darkona.zoo.simulation.Player;
+import com.darkona.zoo.simulation.Simulation;
 import com.darkona.zoo.terrain.Terrain;
 import com.darkona.zoo.vegetation.Vegetation;
 import lombok.Data;
@@ -65,6 +66,7 @@ public class World implements Updatable, Renderable{
     }
 
     public boolean setAnimal(Animal a){
+
         return field[a.position.x][a.position.y].setAnimal(a);
     }
 
@@ -98,9 +100,15 @@ public class World implements Updatable, Renderable{
 
     @Override
     public void update() {
-        for(Updatable updatable : updatables){
-            updatable.update();
-        }
+
+            for (Updatable updatable : updatables) {
+                if(updatable instanceof Player){
+                    updatable.update();
+                }else if(!Simulation.PAUSED){
+                    updatable.update();
+                }
+            }
+
     }
 
 }

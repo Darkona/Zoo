@@ -5,8 +5,6 @@ import com.darkona.zoo.common.Size;
 import com.darkona.zoo.interfaces.Updatable;
 import lombok.Data;
 
-import java.awt.*;
-
 @Data
 public abstract class WorldThing implements Updatable {
 

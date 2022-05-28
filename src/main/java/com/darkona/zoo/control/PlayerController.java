@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 
 public class PlayerController implements Controller{
 
-    private Input input;
+    private final Input input;
 
     public PlayerController(Input input){
         this.input = input;
@@ -32,4 +32,11 @@ public class PlayerController implements Controller{
     public boolean isRequestingRight() {
         return input.isPressed(KeyEvent.VK_RIGHT);
     }
+
+    @Override
+    public boolean isSpace() {
+        return input.isPressed(KeyEvent.VK_SPACE);
+    }
+
+
 }

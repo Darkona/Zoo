@@ -2,7 +2,6 @@ package com.darkona.zoo.terrain;
 
 import com.darkona.zoo.common.Coordinates;
 import com.darkona.zoo.common.Size;
-import com.darkona.zoo.render.renderer.TerrainRenderer;
 
 import java.awt.*;
 

@@ -17,6 +17,7 @@ import org.pmw.tinylog.Logger;
 @Log
 public class Simulation {
 
+    public static boolean PAUSED = false;
     private Display display;
     private World world;
     private Input input;
@@ -34,10 +35,10 @@ public class Simulation {
             Fox fox = new Fox(world, new Coordinates(i, 0));
             if (world.setAnimal(fox)) world.addToWorld(fox);
         }
-        for (int i = 0; i < amountOfFoxes * 2; i++) {
+        /*for (int i = 0; i < amountOfFoxes * 2; i++) {
             Chicken chicken = new Chicken(world, new Coordinates(i, 2));
             if (world.setAnimal(chicken)) world.addToWorld(chicken);
-        }
+        }*/
         world.setPlayer(player);
         world.addToWorld(player);
     }

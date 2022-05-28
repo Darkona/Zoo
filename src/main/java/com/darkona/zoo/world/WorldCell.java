@@ -28,26 +28,23 @@ public class WorldCell implements Renderable {
     private Player player;
     Random random;
 
+    Map<Class, TerrainType> terrainMap = new HashMap<>();
+
+
     public WorldCell(Coordinates coordinates) {
         random = new Random();
+        terrainMap.put(Swimmer.class, TerrainType.SWIMMABLE);
+        terrainMap.put(Walker.class, TerrainType.WALKABLE);
+        terrainMap.put(Flier.class, TerrainType.FLYABLE);
         if(coordinates.x < 10 && coordinates.y < 10){
             floor = new Dirt(coordinates);
         }else if(coordinates.x > 40 || coordinates.y > 40){
             floor = new Grass(coordinates);
         }else{
             switch (random.nextInt(2)) {
-                case 0:
-                    floor = new Grass(coordinates);
-                    break;
-                case 1:
-                    floor = new Dirt(coordinates);
-                    break;
-                case 2:
-                    floor = new Water(coordinates);
-                    break;
-                default:
-                    floor = new Dirt(coordinates);
-                    break;
+                case 0: floor = new Grass(coordinates); break;
+                case 2: floor = new Water(coordinates);break;
+                default: floor = new Dirt(coordinates);break;
             }
         }
         vegetation = new NoVegetation(coordinates);
@@ -57,13 +54,7 @@ public class WorldCell implements Renderable {
 
     @SuppressWarnings("rawtypes")
     public int canPutAnimal(Animal a) {
-        Map<Class, TerrainType> map = new HashMap<>();
-
-        map.put(Swimmer.class, TerrainType.SWIMMABLE);
-        map.put(Walker.class, TerrainType.WALKABLE);
-        map.put(Flier.class, TerrainType.FLYABLE);
-
-        return map.entrySet().stream()
+        return terrainMap.entrySet().stream()
                 .filter(entry -> entry.getKey().isInstance(a)
                         && entities[entry.getValue().ordinal()] == null
                         && floor.getTerrainType() == entry.getValue())
@@ -92,6 +83,7 @@ public class WorldCell implements Renderable {
         int placement = canPutAnimal(a);
         if (placement > -1) {
             entities[placement] = a;
+            a.setCurrentCell(this);
             return true;
         }
         return false;
@@ -103,13 +95,9 @@ public class WorldCell implements Renderable {
         floor.render(graphics);
         vegetation.render(graphics);
         Arrays.stream(entities).forEach(e -> {
-            if (e != null) {
-                e.render(graphics);
-            }
+            if (e != null) e.render(graphics);
         });
-        if (player != null) {
-            player.render(graphics);
-        }
+        if (player != null) player.render(graphics);
     }
 
 
@@ -119,18 +107,10 @@ public class WorldCell implements Renderable {
             switch (found) {
                 case 0:
                 case 1:
-                case 2:
-                    this.entities[found] = null;
-                    break;
-                case 3:
-                    this.player = null;
-                    break;
-                case 4:
-                    this.floor = null;
-                    break;
-                case 5:
-                    this.vegetation = null;
-                    break;
+                case 2: this.entities[found] = null; break;
+                case 3: this.player = null; break;
+                case 4: this.floor = null; break;
+                case 5: this.vegetation = null; break;
             }
         }
     }
