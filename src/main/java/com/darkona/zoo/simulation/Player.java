@@ -5,6 +5,7 @@ import com.darkona.zoo.common.Size;
 import com.darkona.zoo.control.Controller;
 import com.darkona.zoo.interfaces.Renderable;
 import com.darkona.zoo.render.ImageUtils;
+import com.darkona.zoo.render.renderer.PlayerRenderer;
 import com.darkona.zoo.world.World;
 import com.darkona.zoo.world.WorldThing;
 
@@ -14,14 +15,16 @@ public class Player extends WorldThing implements Renderable {
 
     private final Controller controller;
     private final World world;
-    private final Image image;
+
+    private final PlayerRenderer playerRenderer;
 
     public Player(World world, Controller controller, String name){
-        super(new Coordinates(5,5), new Size());
+        super(new Coordinates(world.getSize().width / 2,world.getSize().height / 2), new Size());
         this.controller = controller;
         this.world = world;
         this.name = name;
-        this.image = ImageUtils.loadImage("/animal/PC.png");
+        this.playerRenderer = new PlayerRenderer();
+
     }
 
     @Override
@@ -49,12 +52,6 @@ public class Player extends WorldThing implements Renderable {
 
     @Override
     public void render(Graphics graphics) {
-      getSprite(graphics);
-    }
-
-    @Override
-    public Image getSprite(Graphics graphics) {
-        ImageUtils.drawImage(image, this, graphics, 5,5, new Size(15,15));
-        return image;
+        playerRenderer.render(graphics, this);
     }
 }

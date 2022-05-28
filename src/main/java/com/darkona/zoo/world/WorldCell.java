@@ -113,11 +113,6 @@ public class WorldCell implements Renderable {
     }
 
 
-    @Override
-    public Image getSprite(Graphics graphics) {
-        return null;
-    }
-
     public void remove(WorldThing thing) {
         int found = exists(thing);
         if(found > -1) {

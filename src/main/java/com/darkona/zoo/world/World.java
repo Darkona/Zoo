@@ -91,13 +91,9 @@ public class World implements Updatable, Renderable{
 
     @Override
     public void render(Graphics graphics) {
-        renderables.forEach(renderable -> renderable.render(graphics));
+        renderables.forEach(r -> r.render(graphics));
     }
 
-    @Override
-    public Image getSprite(Graphics graphics) {
-        return null;
-    }
 
 
     @Override

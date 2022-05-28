@@ -2,6 +2,7 @@ package com.darkona.zoo.render;
 
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.world.WorldThing;
+import org.pmw.tinylog.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -13,13 +14,14 @@ import static com.darkona.zoo.simulation.Simulation.SCALE;
 
 public class ImageUtils {
     public static Image loadImage(String filePath){
+        Logger.debug("Loading image... " + filePath);
         try{
             URL url = ImageUtils.class.getResource(filePath);
             return ImageIO.read(Objects.requireNonNull(url));
         }catch (IOException e){
-            System.out.println("Could not load image from path: " + filePath);
+            Logger.error("Could not load image from path: " + filePath);
         }catch (NullPointerException f){
-            System.out.println("Filepath points to null image.");
+            Logger.error("Filepath points to null image.");
         }
         return null;
     }
@@ -31,4 +33,5 @@ public class ImageUtils {
         int bY = aY + thing.getSize().height * SCALE;
         graphics.drawImage(image, aX, aY, bX, bY, u, v,  u + size.width, v + size.height,null);
     }
+
 }

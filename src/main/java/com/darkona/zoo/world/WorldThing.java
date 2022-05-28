@@ -13,7 +13,6 @@ public abstract class WorldThing implements Updatable {
     protected Coordinates position;
     protected String name;
     protected Size size;
-    protected Image sprite;
 
     public WorldThing(){}
 
@@ -23,6 +22,5 @@ public abstract class WorldThing implements Updatable {
     }
 
     public abstract void update();
-    public abstract Image getSprite(Graphics graphics);
 
 }

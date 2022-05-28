@@ -2,11 +2,12 @@ package com.darkona.zoo.animal;
 
 import com.darkona.zoo.Configuration;
 import com.darkona.zoo.Movement;
+import com.darkona.zoo.ai.MovementAi;
 import com.darkona.zoo.common.Coordinates;
 import com.darkona.zoo.common.Size;
-import com.darkona.zoo.common.Utils;
-import com.darkona.zoo.render.ImageUtils;
+import com.darkona.zoo.render.renderer.FoxRenderer;
 import com.darkona.zoo.world.World;
+import org.pmw.tinylog.Logger;
 
 import java.awt.*;
 import java.util.Random;
@@ -14,70 +15,41 @@ import java.util.Random;
 
 public class Fox extends Animal implements Walker {
 
-    private final Random r = new Random();
     private final Configuration configuration;
+    private final FoxRenderer renderer;
 
     public Fox(World world, Coordinates position) {
         super(world, position, new Size());
         this.name = "Fox";
-        this.image = ImageUtils.loadImage("/animal/fox.png");
         this.configuration = Configuration.getInstance();
+        this.renderer = new FoxRenderer(5, 16, new Size(20, 16));
     }
 
-    private void generateRandomDestination() {
-        if(configuration.isEnableLog())
-            System.out.println("Generating new destination.");
 
-        int x = r.nextInt(world.getSize().width);
-        int y = r.nextInt(world.getSize().height);
-        if (world.getField()[x][y].canPutAnimal(this) > -1) {
-            destination = new Coordinates(x, y);
-            if(configuration.isEnableLog())
-                System.out.println("Found new destination " + destination);
-        }
-    }
 
     @Override
     public void update() {
-        if(configuration.isEnableLog())
-            System.out.println("Updating " + this);
+        if(configuration.isEnableLog()) Logger.debug("Updating " + this);
 
         if (destination != null) {
-            if(configuration.isEnableLog())
-                System.out.println("Trying to move to destination " + destination);
+            if(configuration.isEnableLog()) Logger.debug("Trying to move to destination " + destination);
             move(world, destination);
         }
 
         if (position.equals(destination)) {
-            if(configuration.isEnableLog())
-                System.out.println("Already at destination. Position: " + position + " and destination: " + destination);
+            if(configuration.isEnableLog()) Logger.debug("Already at destination. Position: " + position + " and destination: " + destination);
             destination = null;
         }
 
         if (destination == null) {
-            if(configuration.isEnableLog())
-                System.out.println("No destination.");
-            generateRandomDestination();
+            if(configuration.isEnableLog()) Logger.debug("No destination.");
+            MovementAi.generateRandomDestination(this);
         }
     }
-
-    @Override
-    public Image getSprite(Graphics graphics) {
-        try {
-            ImageUtils.drawImage(image, this, graphics, 5, 16, new Size(20, 16));
-            return image;
-        } catch (Exception e) {
-            graphics.setColor(Color.ORANGE);
-            Utils.fillRect(graphics, this);
-            return null;
-        }
-    }
-
 
     @Override
     public void render(Graphics graphics) {
-        getSprite(graphics);
-
+        this.renderer.render(graphics, this);
     }
 
     private int getTerrainSpeed() {
@@ -95,12 +67,11 @@ public class Fox extends Animal implements Walker {
 
             int movX = mov.getDx();
             int movY = mov.getDy();
-
+            Coordinates oldPos = new Coordinates(position.x, position.y);
             if (world.getField()[position.x + mov.getDx()][position.y + mov.getDy()].canPutAnimal(this) > -1){
                 if(configuration.isEnableLog())
-                    System.out.println("Movement: " + mov + " -- Future coords are" + new Coordinates(position.x, position.y));
-
-                Coordinates oldPos = new Coordinates(position.x, position.y);
+                    System.out.println("Movement: " + mov + " -- Future coords are"
+                            + new Coordinates(position.x + mov.getDx(), position.y + mov.getDy()));
                 position.translate(movX, movY);
                 world.moveThing(this, oldPos);
             }
@@ -128,4 +99,5 @@ public class Fox extends Animal implements Walker {
     public String toString() {
         return "Fox. Id: " + id + ". Position " + position;
     }
+
 }

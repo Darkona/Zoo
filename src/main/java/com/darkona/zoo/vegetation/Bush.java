@@ -23,9 +23,4 @@ public class Bush extends Vegetation {
 
     }
 
-    @Override
-    public Image getSprite(Graphics graphics) {
-        return null;
-    }
-
 }

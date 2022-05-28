@@ -17,12 +17,6 @@ public class NoVegetation extends Vegetation {
     }
 
     @Override
-    public Image getSprite(Graphics graphics) {
-        return null;
-    }
-
-
-    @Override
     public void render(Graphics graphics) {
 
     }
