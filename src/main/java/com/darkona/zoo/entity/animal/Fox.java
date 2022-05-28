@@ -4,6 +4,7 @@ import com.darkona.zoo.Movement;
 import com.darkona.zoo.entity.ai.MovementAi;
 import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
+import com.darkona.zoo.entity.interfaces.Walker;
 import com.darkona.zoo.render.renderer.entity.FoxRenderer;
 import com.darkona.zoo.world.World;
 import org.pmw.tinylog.Logger;
@@ -66,7 +67,8 @@ public class Fox extends Animal implements Walker {
             //int movX = mov.getDx();
             //int movY = mov.getDy();
             Position oldPos = new Position(position.x, position.y);
-            if (world.getField()[position.x + mov.getDx()][position.y + mov.getDy()].canPutAnimal(this) > -1){
+            Position newPos = new Position(position, mov.getDx(), mov.getDy());
+            if (world.getCellAt(newPos).canPutAnimal(this) > -1){
                 Logger.debug("Movement: " + mov + " -- Future coords are" + new Position(position.x + mov.getDx(), position.y + mov.getDy()));
                 position.translate(movX, movY);
                 world.moveThing(this, oldPos);

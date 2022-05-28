@@ -7,6 +7,8 @@ import com.darkona.zoo.entity.ai.interfaces.Renderable;
 import com.darkona.zoo.entity.ai.interfaces.Updatable;
 import com.darkona.zoo.entity.Player;
 import com.darkona.zoo.simulation.Simulation;
+import com.darkona.zoo.world.terrain.Dirt;
+import com.darkona.zoo.world.terrain.Grass;
 import com.darkona.zoo.world.terrain.Terrain;
 import com.darkona.zoo.entity.vegetation.Vegetation;
 import lombok.Data;
@@ -14,6 +16,7 @@ import lombok.Data;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Data
 public class World implements Updatable, Renderable{
@@ -33,12 +36,18 @@ public class World implements Updatable, Renderable{
         for (int i = 0 ; i < field.length; i++) {
             WorldCell[] cells = field[i];
             for (int j = 0; j < cells.length; j++) {
-                cells[j] = new WorldCell(new Position(i, j));
+                switch(Simulation.RANDOM.nextInt(2)){
+                    case 0 : cells[j] = new WorldCell(new Dirt(new Position(i, j))); break;
+                    default: cells[j] = new WorldCell(new Grass(new Position(i, j))); break;
+                }
                 renderables.add(cells[j].getFloor());
             }
         }
     }
 
+    public WorldCell getCellAt(Position pos){
+        return field[pos.x][pos.y];
+    }
     public void moveThing(WorldThing thing, Position oldCoords){
 
         int exists = field[thing.position.x][thing.position.y].exists(thing);

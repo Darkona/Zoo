@@ -12,11 +12,14 @@ import lombok.Data;
 import lombok.extern.java.Log;
 import org.pmw.tinylog.Logger;
 
+import java.util.Random;
+
 
 @Data
 @Log
 public class Simulation {
 
+    public static final Random RANDOM = new Random();
     public static boolean PAUSED = false;
     private Display display;
     private World world;

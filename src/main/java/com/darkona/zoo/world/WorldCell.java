@@ -3,9 +3,9 @@ package com.darkona.zoo.world;
 import com.darkona.zoo.common.Position;
 import com.darkona.zoo.entity.Player;
 import com.darkona.zoo.entity.animal.Animal;
-import com.darkona.zoo.entity.animal.Flier;
-import com.darkona.zoo.entity.animal.Swimmer;
-import com.darkona.zoo.entity.animal.Walker;
+import com.darkona.zoo.entity.interfaces.Flier;
+import com.darkona.zoo.entity.interfaces.Swimmer;
+import com.darkona.zoo.entity.interfaces.Walker;
 import com.darkona.zoo.entity.ai.interfaces.Renderable;
 import com.darkona.zoo.entity.vegetation.NoVegetation;
 import com.darkona.zoo.entity.vegetation.Vegetation;
@@ -52,13 +52,13 @@ public class WorldCell implements Renderable {
         this.position = position;
     }
 
-    public WorldCell(Terrain terrain, Position position){
+    public WorldCell(Terrain terrain){
         random = new Random();
         terrainMap = new HashMap<>();
         terrainMap.put(Swimmer.class, TerrainType.SWIMMABLE);
         terrainMap.put(Walker.class, TerrainType.WALKABLE);
         terrainMap.put(Flier.class, TerrainType.FLYABLE);
-        vegetation = new NoVegetation(position);
+        vegetation = new NoVegetation(terrain.getPosition());
         entities = new Animal[3];
         this.position = terrain.getPosition();
         floor = terrain;

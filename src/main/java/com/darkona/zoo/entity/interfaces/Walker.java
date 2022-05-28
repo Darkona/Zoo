@@ -1,4 +1,4 @@
-package com.darkona.zoo.entity.animal;
+package com.darkona.zoo.entity.interfaces;
 
 import com.darkona.zoo.common.Position;
 

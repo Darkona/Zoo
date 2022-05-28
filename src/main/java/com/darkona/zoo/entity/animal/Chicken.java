@@ -4,6 +4,7 @@ import com.darkona.zoo.Movement;
 import com.darkona.zoo.entity.ai.MovementAi;
 import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
+import com.darkona.zoo.entity.interfaces.Walker;
 import com.darkona.zoo.render.renderer.entity.ChickenRenderer;
 import com.darkona.zoo.world.World;
 import org.pmw.tinylog.Logger;
