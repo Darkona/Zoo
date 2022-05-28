@@ -1,18 +1,17 @@
 package com.darkona.zoo.simulation;
 
+import com.darkona.zoo.Configuration;
 import lombok.Data;
 
-import static com.darkona.zoo.Main.PRINT_FPS;
-import static com.darkona.zoo.Main.rate;
 
 @Data
 public class Loop implements Runnable{
 
     private final Simulation simulation;
-
+    private final Configuration configuration = Configuration.getInstance();
     private boolean running;
 
-    private final double updateRate = 1.0d/rate;
+    private final double updateRate = 1.0d/configuration.getRate();
     private final double renderRate = 1.0d/120.0d;
     private long nextStatTime;
     private int fps, ups;
@@ -48,7 +47,7 @@ public class Loop implements Runnable{
     }
 
     private void printStats() {
-        if(PRINT_FPS && System.currentTimeMillis() > nextStatTime) {
+        if(configuration.isEnableLog() && System.currentTimeMillis() > nextStatTime) {
             System.out.printf("FPS: %d, UPS: %d%n", fps, ups);
             fps = 0;
             ups = 0;

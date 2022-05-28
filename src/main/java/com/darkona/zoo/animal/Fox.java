@@ -1,5 +1,6 @@
 package com.darkona.zoo.animal;
 
+import com.darkona.zoo.Configuration;
 import com.darkona.zoo.Movement;
 import com.darkona.zoo.common.Coordinates;
 import com.darkona.zoo.common.Size;
@@ -10,43 +11,52 @@ import com.darkona.zoo.world.World;
 import java.awt.*;
 import java.util.Random;
 
-import static com.darkona.zoo.Main.ENABLE_LOG;
 
 public class Fox extends Animal implements Walker {
 
     private final Random r = new Random();
-
+    private final Configuration configuration;
 
     public Fox(World world, Coordinates position) {
         super(world, position, new Size());
         this.name = "Fox";
         this.image = ImageUtils.loadImage("/animal/fox.png");
-
+        this.configuration = Configuration.getInstance();
     }
 
     private void generateRandomDestination() {
-        if(ENABLE_LOG)System.out.println("Generating new destination.");
+        if(configuration.isEnableLog())
+            System.out.println("Generating new destination.");
+
         int x = r.nextInt(world.getSize().width);
         int y = r.nextInt(world.getSize().height);
         if (world.getField()[x][y].canPutAnimal(this) > -1) {
             destination = new Coordinates(x, y);
-            if(ENABLE_LOG)System.out.println("Found new destination " + destination);
+            if(configuration.isEnableLog())
+                System.out.println("Found new destination " + destination);
         }
     }
 
     @Override
     public void update() {
-        if(ENABLE_LOG) System.out.println("Updating " + this);
+        if(configuration.isEnableLog())
+            System.out.println("Updating " + this);
+
         if (destination != null) {
-            if(ENABLE_LOG)System.out.println("Trying to move to destination " + destination);
+            if(configuration.isEnableLog())
+                System.out.println("Trying to move to destination " + destination);
             move(world, destination);
         }
+
         if (position.equals(destination)) {
-            if(ENABLE_LOG) System.out.println("Already at destination. Position: " + position + " and destination: " + destination);
+            if(configuration.isEnableLog())
+                System.out.println("Already at destination. Position: " + position + " and destination: " + destination);
             destination = null;
         }
+
         if (destination == null) {
-            if(ENABLE_LOG)System.out.println("No destination.");
+            if(configuration.isEnableLog())
+                System.out.println("No destination.");
             generateRandomDestination();
         }
     }
@@ -79,12 +89,17 @@ public class Fox extends Animal implements Walker {
 
         Movement mov = prepareDeltas(getTerrainSpeed());
         if (mov.isMovement()) {
-            boolean m = r.nextBoolean();
-            int movX = m ? mov.getDx() : 0;
-            int movY = !m ? mov.getDy() : 0;
+            //boolean m = r.nextBoolean();
+            //int movX = m ? mov.getDx() : 0;
+            //int movY = !m ? mov.getDy() : 0;
+
+            int movX = mov.getDx();
+            int movY = mov.getDy();
 
             if (world.getField()[position.x + mov.getDx()][position.y + mov.getDy()].canPutAnimal(this) > -1){
-                if(ENABLE_LOG) System.out.println("Movement: " + mov + " -- Future coords are" + new Coordinates(position.x, position.y));
+                if(configuration.isEnableLog())
+                    System.out.println("Movement: " + mov + " -- Future coords are" + new Coordinates(position.x, position.y));
+
                 Coordinates oldPos = new Coordinates(position.x, position.y);
                 position.translate(movX, movY);
                 world.moveThing(this, oldPos);

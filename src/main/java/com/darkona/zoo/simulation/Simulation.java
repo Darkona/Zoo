@@ -1,6 +1,5 @@
 package com.darkona.zoo.simulation;
 
-
 import com.darkona.zoo.animal.Fox;
 import com.darkona.zoo.common.Coordinates;
 import com.darkona.zoo.common.Size;
@@ -10,8 +9,8 @@ import com.darkona.zoo.render.Display;
 import com.darkona.zoo.world.World;
 import lombok.Data;
 import lombok.extern.java.Log;
+import org.pmw.tinylog.Logger;
 
-import java.util.logging.Level;
 
 @Data
 @Log
@@ -27,10 +26,10 @@ public class Simulation {
         input = new Input();
         world = new World(size);
         display = new Display(new Size(size.width * SCALE, size.height * SCALE), input);
-
-        log.log(Level.INFO, String.format("Started simulation with a world of %d by %d. Display will be %d by %d " +
-                        "pixels.", size.width,
+        Logger.info(String.format("Started simulation with a world of %d by %d. Display will be %d by %d " +
+                                          "pixels.", size.width,
                 size.height, display.getWidth(), display.getHeight()));
+
 
 
 
