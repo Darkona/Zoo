@@ -1,13 +1,13 @@
-package com.darkona.zoo.vegetation;
+package com.darkona.zoo.entity.vegetation;
 
-import com.darkona.zoo.common.Coordinates;
+import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
 
 import java.awt.*;
 
 public class NoVegetation extends Vegetation {
 
-    public NoVegetation(Coordinates position) {
+    public NoVegetation(Position position) {
         super(position, new Size(1,1));
     }
 

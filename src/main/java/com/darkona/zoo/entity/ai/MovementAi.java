@@ -1,10 +1,9 @@
-package com.darkona.zoo.ai;
+package com.darkona.zoo.entity.ai;
 
 import com.darkona.zoo.Configuration;
 import com.darkona.zoo.Movement;
-import com.darkona.zoo.animal.Animal;
-import com.darkona.zoo.common.Coordinates;
-import org.pmw.tinylog.Logger;
+import com.darkona.zoo.entity.animal.Animal;
+import com.darkona.zoo.common.Position;
 
 import java.util.Random;
 
@@ -22,7 +21,7 @@ public class MovementAi {
         int x = r.nextInt(animal.getWorld().getSize().width);
         int y = r.nextInt(animal.getWorld().getSize().height);
         if (animal.getWorld().getField()[x][y].canPutAnimal(animal) > -1) {
-            animal.setDestination(new Coordinates(x, y));
+            animal.setDestination(new Position(x, y));
         }
     }
 }

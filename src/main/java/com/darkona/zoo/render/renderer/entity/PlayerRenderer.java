@@ -1,12 +1,13 @@
-package com.darkona.zoo.render.renderer;
+package com.darkona.zoo.render.renderer.entity;
 
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.render.ImageUtils;
+import com.darkona.zoo.render.renderer.Renderer;
 import com.darkona.zoo.world.WorldThing;
 
 import java.awt.*;
 
-public class PlayerRenderer implements Renderer{
+public class PlayerRenderer implements Renderer {
 
     private final Image image;
     public PlayerRenderer(){

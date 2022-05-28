@@ -1,4 +1,4 @@
-package com.darkona.zoo.terrain;
+package com.darkona.zoo.world.terrain;
 
 public enum TerrainType {
 

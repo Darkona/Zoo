@@ -1,8 +1,8 @@
 package com.darkona.zoo.simulation;
 
-import com.darkona.zoo.animal.Chicken;
-import com.darkona.zoo.animal.Fox;
-import com.darkona.zoo.common.Coordinates;
+import com.darkona.zoo.entity.Player;
+import com.darkona.zoo.entity.animal.Fox;
+import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Input;
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.control.PlayerController;
@@ -32,7 +32,7 @@ public class Simulation {
                 size.height, display.getWidth(), display.getHeight()));
         Player player = new Player(world, new PlayerController(input), "Darkona");
         for (int i = 0; i < amountOfFoxes; i++) {
-            Fox fox = new Fox(world, new Coordinates(i, 0));
+            Fox fox = new Fox(world, new Position(i, 0));
             if (world.setAnimal(fox)) world.addToWorld(fox);
         }
         /*for (int i = 0; i < amountOfFoxes * 2; i++) {

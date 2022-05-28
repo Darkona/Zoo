@@ -1,10 +1,11 @@
-package com.darkona.zoo.simulation;
+package com.darkona.zoo.entity;
 
-import com.darkona.zoo.common.Coordinates;
+import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.control.Controller;
-import com.darkona.zoo.interfaces.Renderable;
-import com.darkona.zoo.render.renderer.PlayerRenderer;
+import com.darkona.zoo.entity.ai.interfaces.Renderable;
+import com.darkona.zoo.render.renderer.entity.PlayerRenderer;
+import com.darkona.zoo.simulation.Simulation;
 import com.darkona.zoo.world.World;
 import com.darkona.zoo.world.WorldThing;
 
@@ -17,7 +18,7 @@ public class Player extends WorldThing implements Renderable {
     private final PlayerRenderer playerRenderer;
 
     public Player(World world, Controller controller, String name){
-        super(new Coordinates(world.getSize().width / 2,world.getSize().height / 2), new Size());
+        super(new Position(world.getSize().width / 2,world.getSize().height / 2), new Size());
         this.controller = controller;
         this.world = world;
         this.name = name;
@@ -27,7 +28,7 @@ public class Player extends WorldThing implements Renderable {
 
     @Override
     public void update() {
-        Coordinates oldPos = new Coordinates(position.x,position.y);
+        Position oldPos = new Position(position.x,position.y);
         boolean moved = false;
         if(controller.isSpace()){
             Simulation.PAUSED = !Simulation.PAUSED;

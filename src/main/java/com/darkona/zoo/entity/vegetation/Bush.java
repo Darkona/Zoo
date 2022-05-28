@@ -1,6 +1,6 @@
-package com.darkona.zoo.vegetation;
+package com.darkona.zoo.entity.vegetation;
 
-import com.darkona.zoo.common.Coordinates;
+import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.world.World;
 
@@ -8,8 +8,8 @@ import java.awt.*;
 
 public class Bush extends Vegetation {
 
-    public Bush(World world, Coordinates coordinates, Size size) {
-        super(coordinates, size);
+    public Bush(World world, Position position, Size size) {
+        super(position, size);
     }
 
 

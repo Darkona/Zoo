@@ -1,6 +1,6 @@
-package com.darkona.zoo.terrain;
+package com.darkona.zoo.world.terrain;
 
-import com.darkona.zoo.common.Coordinates;
+import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.render.renderer.TerrainRenderer;
 
@@ -8,8 +8,8 @@ import java.awt.*;
 
 public class Dirt extends Terrain {
 
-    public Dirt(Coordinates coordinates) {
-        super(coordinates, Size.ONE_BY_ONE, TerrainType.WALKABLE);
+    public Dirt(Position position) {
+        super(position, Size.ONE_BY_ONE, TerrainType.WALKABLE);
         this.terrainRenderer = new TerrainRenderer( 27, 92, new Size(32, 32));
     }
 

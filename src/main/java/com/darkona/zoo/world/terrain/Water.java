@@ -1,6 +1,6 @@
-package com.darkona.zoo.terrain;
+package com.darkona.zoo.world.terrain;
 
-import com.darkona.zoo.common.Coordinates;
+import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
 
 import java.awt.*;
@@ -8,8 +8,8 @@ import java.awt.*;
 public class Water extends Terrain{
 
 
-    public Water(Coordinates coordinates) {
-        super(coordinates, Size.ONE_BY_ONE, TerrainType.SWIMMABLE);
+    public Water(Position position) {
+        super(position, Size.ONE_BY_ONE, TerrainType.SWIMMABLE);
         //this.terrainRenderer = new TerrainRenderer(735, 352, new Size(32, 32));
     }
 

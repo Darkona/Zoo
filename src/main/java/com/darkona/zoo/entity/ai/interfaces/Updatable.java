@@ -1,4 +1,4 @@
-package com.darkona.zoo.interfaces;
+package com.darkona.zoo.entity.ai.interfaces;
 
 public interface Updatable {
 

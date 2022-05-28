@@ -2,9 +2,9 @@ package com.darkona.zoo.common;
 
 import java.awt.*;
 
-public class Coordinates extends Point {
+public class Position extends Point {
 
-    public Coordinates(int x, int y) {
+    public Position(int x, int y) {
         super(x,y);
     }
 

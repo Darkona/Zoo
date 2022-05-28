@@ -1,14 +1,14 @@
 package com.darkona.zoo.world;
 
-import com.darkona.zoo.animal.Animal;
-import com.darkona.zoo.common.Coordinates;
+import com.darkona.zoo.entity.animal.Animal;
+import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
-import com.darkona.zoo.interfaces.Renderable;
-import com.darkona.zoo.interfaces.Updatable;
-import com.darkona.zoo.simulation.Player;
+import com.darkona.zoo.entity.ai.interfaces.Renderable;
+import com.darkona.zoo.entity.ai.interfaces.Updatable;
+import com.darkona.zoo.entity.Player;
 import com.darkona.zoo.simulation.Simulation;
-import com.darkona.zoo.terrain.Terrain;
-import com.darkona.zoo.vegetation.Vegetation;
+import com.darkona.zoo.world.terrain.Terrain;
+import com.darkona.zoo.entity.vegetation.Vegetation;
 import lombok.Data;
 
 import java.awt.*;
@@ -33,13 +33,13 @@ public class World implements Updatable, Renderable{
         for (int i = 0 ; i < field.length; i++) {
             WorldCell[] cells = field[i];
             for (int j = 0; j < cells.length; j++) {
-                cells[j] = new WorldCell(new Coordinates(i, j));
+                cells[j] = new WorldCell(new Position(i, j));
                 renderables.add(cells[j].getFloor());
             }
         }
     }
 
-    public void moveThing(WorldThing thing, Coordinates oldCoords){
+    public void moveThing(WorldThing thing, Position oldCoords){
 
         int exists = field[thing.position.x][thing.position.y].exists(thing);
         if( exists > -1){
@@ -57,7 +57,7 @@ public class World implements Updatable, Renderable{
 
     }
 
-    public void removeThingFrom(Coordinates c, WorldThing thing){
+    public void removeThingFrom(Position c, WorldThing thing){
         try{
         field[c.x][c.y].remove(thing);}
         catch (Exception e){

@@ -1,29 +1,32 @@
-package com.darkona.zoo.animal;
+package com.darkona.zoo.entity.animal;
 
-import com.darkona.zoo.Configuration;
 import com.darkona.zoo.Movement;
-import com.darkona.zoo.ai.MovementAi;
-import com.darkona.zoo.common.Coordinates;
+import com.darkona.zoo.entity.ai.MovementAi;
+import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
-import com.darkona.zoo.render.renderer.ChickenRenderer;
+import com.darkona.zoo.render.renderer.entity.FoxRenderer;
 import com.darkona.zoo.world.World;
 import org.pmw.tinylog.Logger;
 
 import java.awt.*;
 import java.util.Random;
-public class Chicken extends Animal implements Walker {
 
-    private final ChickenRenderer chickenRenderer;
-    public Chicken(World world, Coordinates position) {
+
+public class Fox extends Animal implements Walker {
+
+    private final FoxRenderer renderer;
+
+
+    public Fox(World world, Position position) {
         super(world, position, new Size());
         this.name = "Fox";
-        this.chickenRenderer = new ChickenRenderer(2,2, new Size(28, 28));
+        this.renderer = new FoxRenderer(5, 16, new Size(20, 16));
     }
+
+
 
     @Override
     public void update() {
-        Logger.debug("Updating " + this);
-
         if (destination != null) {
             Logger.debug("Trying to move to destination " + destination);
             move(world, destination);
@@ -35,25 +38,25 @@ public class Chicken extends Animal implements Walker {
         }
 
         if (destination == null) {
-            Logger.debug("No destination.");
+            Logger.debug("No destination. Generating new destination.");
             MovementAi.generateRandomDestination(this);
+            if(destination != null) Logger.debug("New destination: " + destination);
         }
     }
 
-
     @Override
     public void render(Graphics graphics) {
-       chickenRenderer.render(graphics, this);
+        this.renderer.render(graphics, this);
     }
 
     private int getTerrainSpeed() {
-        return world.getField()[position.x][position.y].getFloor().getSpeedModifier();
+        return currentCell.getFloor().getSpeedModifier();
     }
 
     @Override
-    public void move(World world, Coordinates destination) {
+    public void move(World world, Position destination) {
 
-        Movement mov = prepareDeltas(getTerrainSpeed());
+        Movement mov = MovementAi.prepareDeltas(this, getTerrainSpeed());
         if (mov.isMovement()) {
             Random r = new Random();
             boolean m = r.nextBoolean();
@@ -62,30 +65,17 @@ public class Chicken extends Animal implements Walker {
 
             //int movX = mov.getDx();
             //int movY = mov.getDy();
-
+            Position oldPos = new Position(position.x, position.y);
             if (world.getField()[position.x + mov.getDx()][position.y + mov.getDy()].canPutAnimal(this) > -1){
-                Logger.debug("Movement: " + mov + " -- Future coords are" + new Coordinates(position.x, position.y));
-                Coordinates oldPos = new Coordinates(position.x, position.y);
+                Logger.debug("Movement: " + mov + " -- Future coords are" + new Position(position.x + mov.getDx(), position.y + mov.getDy()));
                 position.translate(movX, movY);
                 world.moveThing(this, oldPos);
             }
         }
     }
 
-    private Movement prepareDeltas(int speed) {
-
-        int deltaX = destination.x - position.x;
-        int deltaY = destination.y - position.y;
-        if (deltaX < 0) deltaX = -1;
-        if (deltaX > 0) deltaX = 1;
-        if (deltaY < 0) deltaY = -1;
-        if (deltaY > 0) deltaY = 1;
-
-        return new Movement(deltaX * speed, deltaY * speed);
-    }
-
     @Override
-    public void walk(Coordinates position, Coordinates destination) {
+    public void walk(Position position, Position destination) {
 
     }
 
@@ -93,4 +83,5 @@ public class Chicken extends Animal implements Walker {
     public String toString() {
         return "Fox. Id: " + id + ". Position " + position;
     }
+
 }

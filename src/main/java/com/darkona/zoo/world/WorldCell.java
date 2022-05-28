@@ -1,15 +1,15 @@
 package com.darkona.zoo.world;
 
-import com.darkona.zoo.animal.Animal;
-import com.darkona.zoo.animal.Flier;
-import com.darkona.zoo.animal.Swimmer;
-import com.darkona.zoo.animal.Walker;
-import com.darkona.zoo.common.Coordinates;
-import com.darkona.zoo.interfaces.Renderable;
-import com.darkona.zoo.simulation.Player;
-import com.darkona.zoo.terrain.*;
-import com.darkona.zoo.vegetation.NoVegetation;
-import com.darkona.zoo.vegetation.Vegetation;
+import com.darkona.zoo.common.Position;
+import com.darkona.zoo.entity.Player;
+import com.darkona.zoo.entity.animal.Animal;
+import com.darkona.zoo.entity.animal.Flier;
+import com.darkona.zoo.entity.animal.Swimmer;
+import com.darkona.zoo.entity.animal.Walker;
+import com.darkona.zoo.entity.ai.interfaces.Renderable;
+import com.darkona.zoo.entity.vegetation.NoVegetation;
+import com.darkona.zoo.entity.vegetation.Vegetation;
+import com.darkona.zoo.world.terrain.*;
 import lombok.Data;
 
 import java.awt.*;
@@ -19,40 +19,52 @@ import java.util.Map;
 import java.util.Random;
 
 @Data
+@SuppressWarnings("rawtypes")
 public class WorldCell implements Renderable {
 
     private Terrain floor;
     private Vegetation vegetation;
     private Animal[] entities;
-    private Coordinates coordinates;
+    private Position position;
     private Player player;
     Random random;
+    Map<Class, TerrainType> terrainMap;
 
-    Map<Class, TerrainType> terrainMap = new HashMap<>();
-
-
-    public WorldCell(Coordinates coordinates) {
+    public WorldCell(Position position) {
         random = new Random();
+        terrainMap = new HashMap<>();
         terrainMap.put(Swimmer.class, TerrainType.SWIMMABLE);
         terrainMap.put(Walker.class, TerrainType.WALKABLE);
         terrainMap.put(Flier.class, TerrainType.FLYABLE);
-        if(coordinates.x < 10 && coordinates.y < 10){
-            floor = new Dirt(coordinates);
-        }else if(coordinates.x > 40 || coordinates.y > 40){
-            floor = new Grass(coordinates);
+        if(position.x < 10 && position.y < 10){
+            floor = new Dirt(position);
+        }else if(position.x > 40 || position.y > 40){
+            floor = new Grass(position);
         }else{
             switch (random.nextInt(2)) {
-                case 0: floor = new Grass(coordinates); break;
-                case 2: floor = new Water(coordinates);break;
-                default: floor = new Dirt(coordinates);break;
+                case 0: floor = new Grass(position); break;
+                case 2: floor = new Water(position);break;
+                default: floor = new Dirt(position);break;
             }
         }
-        vegetation = new NoVegetation(coordinates);
+        vegetation = new NoVegetation(position);
         entities = new Animal[3];
-        this.coordinates = coordinates;
+        this.position = position;
     }
 
-    @SuppressWarnings("rawtypes")
+    public WorldCell(Terrain terrain, Position position){
+        random = new Random();
+        terrainMap = new HashMap<>();
+        terrainMap.put(Swimmer.class, TerrainType.SWIMMABLE);
+        terrainMap.put(Walker.class, TerrainType.WALKABLE);
+        terrainMap.put(Flier.class, TerrainType.FLYABLE);
+        vegetation = new NoVegetation(position);
+        entities = new Animal[3];
+        this.position = terrain.getPosition();
+        floor = terrain;
+    }
+
+
     public int canPutAnimal(Animal a) {
         return terrainMap.entrySet().stream()
                 .filter(entry -> entry.getKey().isInstance(a)
