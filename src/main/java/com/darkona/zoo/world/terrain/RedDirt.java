@@ -7,13 +7,17 @@ import com.darkona.zoo.world.World;
 
 import java.awt.*;
 
-public class Grass extends Terrain {
+public class RedDirt extends Terrain{
 
+    public RedDirt(World world, Position position) {
+        super(world, position, new Size(), TerrainType.WALKABLE);
+        this.terrainRenderer = new TerrainRenderer( 256, 160, new Size(32, 32));
+        this.name = "Red Dirt";
+    }
 
-    public Grass(World world, Position position) {
-        super(world, position, Size.ONE_BY_ONE, TerrainType.WALKABLE);
-        this.terrainRenderer = new TerrainRenderer(408, 282, new Size(32, 32));
-        this.name = "Grass";
+    @Override
+    public void render(Graphics graphics) {
+        terrainRenderer.render(graphics, this);
     }
 
     @Override
@@ -22,13 +26,7 @@ public class Grass extends Terrain {
     }
 
     @Override
-    public void render(Graphics graphics) {
-        terrainRenderer.render(graphics, this);
-    }
-
-
-    @Override
     public int getSpeedModifier() {
-        return 1;
+        return 0;
     }
 }

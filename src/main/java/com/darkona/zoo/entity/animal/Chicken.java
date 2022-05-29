@@ -29,6 +29,7 @@ public class Chicken extends Animal implements Walker {
             move(world, destination);
         }
 
+        assert destination != null;
         if (position.equals(destination)) {
             Logger.debug("Already at destination. Position: " + position + " and destination: " + destination);
             destination = null;
@@ -53,7 +54,7 @@ public class Chicken extends Animal implements Walker {
     @Override
     public void move(World world, Position destination) {
 
-        Movement mov = prepareDeltas(getTerrainSpeed());
+        Movement mov = MovementAi.prepareDeltas(this, getTerrainSpeed());
         if (mov.isMovement()) {
             Random r = new Random();
             boolean m = r.nextBoolean();
@@ -72,17 +73,6 @@ public class Chicken extends Animal implements Walker {
         }
     }
 
-    private Movement prepareDeltas(int speed) {
-
-        int deltaX = destination.x - position.x;
-        int deltaY = destination.y - position.y;
-        if (deltaX < 0) deltaX = -1;
-        if (deltaX > 0) deltaX = 1;
-        if (deltaY < 0) deltaY = -1;
-        if (deltaY > 0) deltaY = 1;
-
-        return new Movement(deltaX * speed, deltaY * speed);
-    }
 
     @Override
     public void walk(Position position, Position destination) {

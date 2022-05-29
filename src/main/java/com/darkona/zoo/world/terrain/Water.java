@@ -2,15 +2,18 @@ package com.darkona.zoo.world.terrain;
 
 import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
+import com.darkona.zoo.render.renderer.TerrainRenderer;
+import com.darkona.zoo.world.World;
 
 import java.awt.*;
 
 public class Water extends Terrain{
 
 
-    public Water(Position position) {
-        super(position, Size.ONE_BY_ONE, TerrainType.SWIMMABLE);
-        //this.terrainRenderer = new TerrainRenderer(735, 352, new Size(32, 32));
+    public Water(World world, Position position) {
+        super(world, position, Size.ONE_BY_ONE, TerrainType.SWIMMABLE);
+        this.terrainRenderer = new TerrainRenderer(928, 160, new Size(32, 32));
+        this.name = "Water";
     }
 
     @Override

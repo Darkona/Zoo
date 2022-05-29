@@ -25,7 +25,6 @@ public class Fox extends Animal implements Walker {
     }
 
 
-
     @Override
     public void update() {
         if (destination != null) {
@@ -41,7 +40,7 @@ public class Fox extends Animal implements Walker {
         if (destination == null) {
             Logger.debug("No destination. Generating new destination.");
             MovementAi.generateRandomDestination(this);
-            if(destination != null) Logger.debug("New destination: " + destination);
+            if (destination != null) Logger.debug("New destination: " + destination);
         }
     }
 
@@ -68,8 +67,12 @@ public class Fox extends Animal implements Walker {
             //int movY = mov.getDy();
             Position oldPos = new Position(position.x, position.y);
             Position newPos = new Position(position, mov.getDx(), mov.getDy());
-            if (world.getCellAt(newPos).canPutAnimal(this) > -1){
-                Logger.debug("Movement: " + mov + " -- Future coords are" + new Position(position.x + mov.getDx(), position.y + mov.getDy()));
+            if (world.getCellAt(newPos).canPutAnimal(this) > -1) {
+                Logger.debug("Movement: " + mov + " -- Current coords are: " + position + " || 0." +
+                        "" +
+                        "" +
+                        "Future coords are: " + new Position(position.x + mov.getDx(),
+                        position.y + mov.getDy()));
                 position.translate(movX, movY);
                 world.moveThing(this, oldPos);
             }

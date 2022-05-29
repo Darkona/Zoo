@@ -23,22 +23,25 @@ public class Loop implements Runnable{
     public void run() {
         long now = System.currentTimeMillis();
         running = true;
-        double accumulator = 0;
+        double upsAcc = 0, fpsAcc = 0;
         long currentTime, lastUpdate = now;
         nextStatTime = now + 1000;
 
         while(running){
             currentTime = System.currentTimeMillis();
-            double lastRenderTimeInSeconds = (currentTime - lastUpdate) / 1000d;
-            accumulator += lastRenderTimeInSeconds;
+            upsAcc += (currentTime - lastUpdate) / 1000d;
+            fpsAcc += (currentTime - lastUpdate) / 1000d;
             lastUpdate = currentTime;
 
-            if(accumulator > updateRate){
-                while(accumulator > updateRate){
+            if(upsAcc > updateRate){
+                while(upsAcc > updateRate){
                     update();
-                    accumulator -= updateRate;
+                    upsAcc -= updateRate;
                 }
+            }
+            if(fpsAcc > updateRate){
                 render();
+                fpsAcc = 0;
             }
             printStats();
         }

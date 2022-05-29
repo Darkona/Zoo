@@ -21,14 +21,12 @@ public abstract class Animal extends WorldThing implements Renderable {
     protected int maxEnergy;
     protected int minEnergy;
     protected Animal partner;
-    protected final World world;
     protected Image image;
     protected UUID id;
     protected WorldCell currentCell;
 
     public Animal(World world, Position position, Size size) {
-        super(position, size);
-        this.world = world;
+        super(position, size, world);
         this.id = UUID.randomUUID();
     }
 

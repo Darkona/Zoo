@@ -9,6 +9,7 @@ public class Movement {
 
     int dx;
     int dy;
+    private double speed;
 
     public boolean isMovement(){
         return dx != 0 || dy != 0;

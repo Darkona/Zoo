@@ -38,5 +38,10 @@ public class PlayerController implements Controller{
         return input.isPressed(KeyEvent.VK_SPACE);
     }
 
+    @Override
+    public boolean isA() {
+        return input.isPressed(KeyEvent.VK_A);
+    }
+
 
 }

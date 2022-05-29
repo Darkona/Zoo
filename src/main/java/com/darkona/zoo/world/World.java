@@ -26,22 +26,28 @@ public class World implements Updatable, Renderable{
     private List<Updatable> updatedTings;
 
     private WorldCell[][] field;
+    private List<WorldCell> worldCells;
     private Size size;
 
     public World(Size size){
         this.size = size;
         this.field = new WorldCell[size.width][size.height];
+        this.worldCells = new ArrayList<>();
         updatables = new ArrayList<>();
         renderables = new ArrayList<>();
         for (int i = 0 ; i < field.length; i++) {
             WorldCell[] cells = field[i];
             for (int j = 0; j < cells.length; j++) {
                 switch(Simulation.RANDOM.nextInt(2)){
-                    case 0 : cells[j] = new WorldCell(new Dirt(new Position(i, j))); break;
-                    default: cells[j] = new WorldCell(new Grass(new Position(i, j))); break;
+                    case 0 : cells[j] = new WorldCell(this, new Dirt(this, new Position(i, j))); break;
+                    default: cells[j] = new WorldCell(this, new Grass(this, new Position(i, j))); break;
                 }
+                worldCells.add(cells[j]);
                 renderables.add(cells[j].getFloor());
             }
+        }
+        for(WorldCell cell : worldCells){
+            cell.fillNeighbors(getField());
         }
     }
 
@@ -75,7 +81,6 @@ public class World implements Updatable, Renderable{
     }
 
     public boolean setAnimal(Animal a){
-
         return field[a.position.x][a.position.y].setAnimal(a);
     }
 
@@ -102,14 +107,13 @@ public class World implements Updatable, Renderable{
 
     @Override
     public void render(Graphics graphics) {
-        renderables.forEach(r -> r.render(graphics));
+        for (int i = 0; i < field.length; i++)
+            for (int j = 0; j < field[i].length; j++)
+                field[i][j].render(graphics);
     }
-
-
 
     @Override
     public void update() {
-
             for (Updatable updatable : updatables) {
                 if(updatable instanceof Player){
                     updatable.update();

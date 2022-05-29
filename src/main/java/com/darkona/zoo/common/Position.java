@@ -13,7 +13,7 @@ public class Position extends Point {
     }
 
     /**
-     * This constructor makes a new Position from an existing position PLUS the adde X and Y.
+     * This constructor makes a new Position from an existing position PLUS the added X and Y.
      * @param pos Original position
      * @param x Additional X
      * @param y Additional Y
@@ -24,6 +24,10 @@ public class Position extends Point {
     @Override
     public String toString(){
         return "X= " + x + ", Y= " + y;
+    }
+
+    public boolean equals(Position position){
+        return position != null && position.x == x && position.y == y;
     }
 
 }
