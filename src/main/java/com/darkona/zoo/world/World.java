@@ -10,10 +10,12 @@ import com.darkona.zoo.entity.Player;
 import com.darkona.zoo.entity.ai.interfaces.Renderable;
 import com.darkona.zoo.entity.ai.interfaces.Updatable;
 import com.darkona.zoo.entity.animal.Animal;
+import com.darkona.zoo.entity.vegetation.Bush;
 import com.darkona.zoo.entity.vegetation.Vegetation;
 import com.darkona.zoo.simulation.Simulation;
 import com.darkona.zoo.world.terrain.Dirt;
 import com.darkona.zoo.world.terrain.Grass;
+import com.darkona.zoo.world.terrain.Lava;
 import com.darkona.zoo.world.terrain.Terrain;
 import lombok.Data;
 
@@ -21,7 +23,7 @@ import lombok.Data;
 public class World implements Updatable, Renderable {
 
     private List<Updatable> updatables;
-    private List<Renderable> renderables;
+
     private List<Updatable> updatedTings;
 
     private WorldCell[][] field;
@@ -33,20 +35,31 @@ public class World implements Updatable, Renderable {
         this.field = new WorldCell[size.width][size.height];
         this.worldCells = new ArrayList<>();
         updatables = new ArrayList<>();
-        renderables = new ArrayList<>();
         for (int i = 0; i < field.length; i++) {
             WorldCell[] cells = field[i];
             for (int j = 0; j < cells.length; j++) {
-                switch ((int)Math.floor(Simulation.RANDOM.nextGaussian()+1)) {
+                int gauss = (int)Math.floor(Simulation.RANDOM.nextGaussian() * 10);
+                Position pos = new Position(i,j);
+                switch (Math.abs(gauss)) {
                     case 0:
-                        cells[j] = new WorldCell(this, new Dirt(this, new Position(i, j)));
+                    case 1:
+                    case 2:
+                    case 3:
+                        cells[j] = new WorldCell(this, new Dirt(this, pos));
                         break;
+                    case 4:
+                    case 5:
+                    case 6:
+                        cells[j] = new WorldCell(this, new Lava(this, pos));
+                        break;
+                    case 7:
+
                     default:
-                        cells[j] = new WorldCell(this, new Grass(this, new Position(i, j)));
+                        cells[j] = new WorldCell(this, new Grass(this, pos));
+                        if(Simulation.RANDOM.nextInt(10) == 6) cells[j].setVegetation(new Bush(this, pos));
                         break;
                 }
                 worldCells.add(cells[j]);
-                renderables.add(cells[j].getFloor());
             }
         }
         for (WorldCell cell : worldCells) {
@@ -122,9 +135,6 @@ public class World implements Updatable, Renderable {
     }
 
     public void addToWorld(WorldThing thing) {
-        if (thing instanceof Renderable) {
-            renderables.add((Renderable) thing);
-        }
         if (thing != null) {
             updatables.add(thing);
         }

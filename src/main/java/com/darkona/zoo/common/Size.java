@@ -10,7 +10,10 @@ public class Size {
 
     public int width;
     public int height;
-
+    public Size(int square){
+        this.height = square;
+        this.width = square;
+    }
     public Size(){
         this.height = 1;
         this.width = 1;

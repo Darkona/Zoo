@@ -65,10 +65,10 @@ public class WorldCell implements Renderable {
     }
 
     public WorldCell(World world, Terrain terrain) {
-        vegetation = new NoVegetation(world, terrain.getPosition());
-        entities = new Animal[3];
+        this.vegetation = new NoVegetation(world, terrain.getPosition());
+        this.entities = new Animal[3];
         this.position = terrain.getPosition();
-        floor = terrain;
+        this.floor = terrain;
         this.world = world;
     }
 

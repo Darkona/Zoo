@@ -47,23 +47,23 @@ public class MovementAi {
                 x += m.getDx();
                 y += m.getDy();
             }
-            for (int i = 0; i < Math.abs(x); i++) {
+           /* for (int i = 0; i < Math.abs(x); i++) {
                 output.push(new Movement(Integer.compare(x,0), 0,1));
             }
             for (int i = 0; i < Math.abs(y); i++) {
                 output.push(new Movement(0, Integer.compare(y,0), 1));
-            }
+            }*/
         }
 
-        Comparator<Movement> scrambler = new Comparator<Movement>() {
+        /*Comparator<Movement> scrambler = new Comparator<Movement>() {
             final Random r = new Random();
             @Override
             public int compare(Movement o1, Movement o2) {
                 return r.nextInt(3) - 1;
             }
         };
-        output.sort(scrambler);
-        return output;
+        output.sort(scrambler);*/
+        return movs;
     }
 
     private static boolean findDestinationCell(WorldCell current, WorldCell prev, Position destination, Queue<WorldCell> queue, Stack<Movement> movements,
