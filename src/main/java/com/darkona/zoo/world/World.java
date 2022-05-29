@@ -1,25 +1,24 @@
 package com.darkona.zoo.world;
 
-import com.darkona.zoo.entity.animal.Animal;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
+import com.darkona.zoo.entity.Player;
 import com.darkona.zoo.entity.ai.interfaces.Renderable;
 import com.darkona.zoo.entity.ai.interfaces.Updatable;
-import com.darkona.zoo.entity.Player;
+import com.darkona.zoo.entity.animal.Animal;
+import com.darkona.zoo.entity.vegetation.Vegetation;
 import com.darkona.zoo.simulation.Simulation;
 import com.darkona.zoo.world.terrain.Dirt;
 import com.darkona.zoo.world.terrain.Grass;
 import com.darkona.zoo.world.terrain.Terrain;
-import com.darkona.zoo.entity.vegetation.Vegetation;
 import lombok.Data;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 @Data
-public class World implements Updatable, Renderable{
+public class World implements Updatable, Renderable {
 
     private List<Updatable> updatables;
     private List<Renderable> renderables;
@@ -29,66 +28,92 @@ public class World implements Updatable, Renderable{
     private List<WorldCell> worldCells;
     private Size size;
 
-    public World(Size size){
+    public World(Size size) {
         this.size = size;
         this.field = new WorldCell[size.width][size.height];
         this.worldCells = new ArrayList<>();
         updatables = new ArrayList<>();
         renderables = new ArrayList<>();
-        for (int i = 0 ; i < field.length; i++) {
+        for (int i = 0; i < field.length; i++) {
             WorldCell[] cells = field[i];
             for (int j = 0; j < cells.length; j++) {
-                switch(Simulation.RANDOM.nextInt(2)){
-                    case 0 : cells[j] = new WorldCell(this, new Dirt(this, new Position(i, j))); break;
-                    default: cells[j] = new WorldCell(this, new Grass(this, new Position(i, j))); break;
+                switch ((int)Math.floor(Simulation.RANDOM.nextGaussian()+1)) {
+                    case 0:
+                        cells[j] = new WorldCell(this, new Dirt(this, new Position(i, j)));
+                        break;
+                    default:
+                        cells[j] = new WorldCell(this, new Grass(this, new Position(i, j)));
+                        break;
                 }
                 worldCells.add(cells[j]);
                 renderables.add(cells[j].getFloor());
             }
         }
-        for(WorldCell cell : worldCells){
+        for (WorldCell cell : worldCells) {
             cell.fillNeighbors(getField());
         }
     }
 
-    public WorldCell getCellAt(Position pos){
-        return field[pos.x][pos.y];
-    }
-    public void moveThing(WorldThing thing, Position oldCoords){
-
-        int exists = field[thing.position.x][thing.position.y].exists(thing);
-        if( exists > -1){
-            switch (exists){
-                case 0:
-                case 1:
-                case 2: setAnimal((Animal)thing);break;
-                case 3: setPlayer((Player)thing);break;
-                case 4: setTerrain((Terrain) thing);break;
-                case 5: setVegetation((Vegetation) thing);break;
-
-            }
-            removeThingFrom(oldCoords, thing);
+    public WorldCell getCellAt(Position pos) {
+        try {
+            return field[pos.x][pos.y];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
         }
 
     }
 
-    public void removeThingFrom(Position c, WorldThing thing){
-        try{
-        field[c.x][c.y].remove(thing);}
-        catch (Exception e){
+    public void movePlayer(Player p, Position oldPos) {
+        if (getCellAt(p.position) != null && !getCellAt(p.position).hasPlayer(p)) {
+            getCellAt(p.position).setPlayer(p);
+            removePlayerFrom(p, oldPos);
+        }
+    }
+
+    public void moveAnimal(Animal a, Position oldPos) {
+        Position pos = a.position;
+        if (getCellAt(pos) != null && !getCellAt(pos).hasAnimal(a)) {
+            if (getCellAt(pos).setAnimal(a)) {
+                getCellAt(pos).remove(a);
+            }
+            else {
+                a.position = oldPos;
+            }
+        }
+    }
+
+    public void moveThing(WorldThing thing, Position oldCoords) {
+        if (thing instanceof Animal) moveAnimal((Animal) thing, oldCoords);
+        if (thing instanceof Player) movePlayer((Player) thing, oldCoords);
+    }
+
+    public void removePlayerFrom(Player p, Position pos) {
+        if (getCellAt(pos) == null) {
+            return;
+        }
+        if (getCellAt(pos).hasPlayer(p)) {
+            getCellAt(pos).setPlayer(null);
+        }
+    }
+
+    public void removeThingFrom(Position c, WorldThing thing) {
+        try {
+            field[c.x][c.y].remove(thing);
+        } catch (Exception e) {
             // no op
         }
     }
 
-    public boolean setAnimal(Animal a){
+    public boolean setAnimal(Animal a) {
         return field[a.position.x][a.position.y].setAnimal(a);
     }
 
-    public void setTerrain(Terrain t){
+    public void setTerrain(Terrain t) {
         field[t.position.x][t.position.y].setFloor(t);
         addToWorld(t);
     }
-    public void setVegetation(Vegetation v){
+
+    public void setVegetation(Vegetation v) {
         field[v.position.x][v.position.x].setVegetation(v);
     }
 
@@ -96,31 +121,34 @@ public class World implements Updatable, Renderable{
         field[player.position.x][player.position.y].setPlayer(player);
     }
 
-    public void addToWorld(WorldThing thing){
-        if(thing instanceof Renderable){
+    public void addToWorld(WorldThing thing) {
+        if (thing instanceof Renderable) {
             renderables.add((Renderable) thing);
         }
-        if(thing != null){
+        if (thing != null) {
             updatables.add(thing);
         }
     }
 
     @Override
     public void render(Graphics graphics) {
-        for (int i = 0; i < field.length; i++)
-            for (int j = 0; j < field[i].length; j++)
+        for (int i = 0; i < field.length; i++) {
+            for (int j = 0; j < field[i].length; j++) {
                 field[i][j].render(graphics);
+            }
+        }
     }
 
     @Override
     public void update() {
-            for (Updatable updatable : updatables) {
-                if(updatable instanceof Player){
-                    updatable.update();
-                }else if(!Simulation.PAUSED){
-                    updatable.update();
-                }
+        for (Updatable updatable : updatables) {
+            if (updatable instanceof Player) {
+                updatable.update();
             }
+            else if (!Simulation.PAUSED) {
+                updatable.update();
+            }
+        }
 
     }
 

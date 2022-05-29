@@ -17,19 +17,21 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 
 public class Player extends WorldThing implements Renderable {
 
     private final Controller controller;
     private final PlayerRenderer playerRenderer;
-    private List<Movement> movs;
+    private Stack<Movement> movs;
+
     public Player(World world, Controller controller, String name){
         super(new Position(world.getSize().width / 2,world.getSize().height / 2), new Size(), world);
         this.controller = controller;
         this.name = name;
         this.playerRenderer = new PlayerRenderer();
-        this.movs = new ArrayList<>();
+        this.movs = new Stack<>();
     }
 
     @Override
@@ -38,19 +40,16 @@ public class Player extends WorldThing implements Renderable {
         Position oldPos = new Position(position.x,position.y);
         boolean moved = false;
         if(movs != null && !movs.isEmpty()){
-            Movement mov = movs.get(0);
-            Random r = new Random();
-            boolean m = r.nextBoolean();
-            int movX = m ? mov.getDx() : 0;
-            int movY = !m ? mov.getDy() : 0;
-            Logger.debug("Movement: " + mov + " -- Future coords are" + new Position(position.x, position.y));
-            position.translate(movX, movY);
-            world.moveThing(this, oldPos);
-            movs.remove(0);
+            Movement mov = movs.pop();
+            Logger.debug("Movement: " + mov + " -- Future coords are" + new Position(position.x + mov.getDx(), position.y + mov.getDy()));
+            position.translate(mov.getDx(), mov.getDy());
+            world.movePlayer(this, oldPos);
         }
-        if(controller.isA()){
-            Logger.debug("A pressed.Player: " + this);
-            movs = MovementAi.traceRouteToPosition(new Position(18,18), this);
+        if(controller.isA() && movs.isEmpty()){
+            Logger.debug("A pressed. Player: " + this);
+            Position des = new Position(new Random().nextInt(world.getSize().width),new Random().nextInt(world.getSize().height));
+            Logger.debug("Destination: " + des);
+            movs = MovementAi.traceRouteToPosition(des, this);
         }
         if(controller.isSpace()){
             Simulation.PAUSED = !Simulation.PAUSED;

@@ -103,13 +103,22 @@ public class WorldCell implements Renderable {
                 .orElse(-1);
     }
 
+
+    public boolean hasPlayer(){
+        return player != null;
+    }
+
+    public boolean hasPlayer(Player p){
+        return player != null && player.equals(p);
+    }
+
     public int exists(WorldThing thing) {
         try {
             if (thing == null) return -2;
             if (thing instanceof Swimmer && entities[0].equals(thing)) return 0;
             if (thing instanceof Walker && entities[1].equals(thing)) return 1;
             if (thing instanceof Flier && entities[2].equals(thing)) return 2;
-            if (thing instanceof Player && player.equals(thing)) return 3;
+            if (thing instanceof Player && hasPlayer((Player) thing)) return 3;
             if (thing instanceof Terrain && floor.equals(thing)) return 4;
             if (thing instanceof Vegetation && vegetation.equals(thing)) return 5;
             return -1;
@@ -134,9 +143,9 @@ public class WorldCell implements Renderable {
     public void render(Graphics graphics) {
         floor.render(graphics);
         vegetation.render(graphics);
-        Arrays.stream(entities).forEach(e -> {
-            if (e != null) e.render(graphics);
-        });
+        if(entities[0]!=null)entities[0].render(graphics);
+        if(entities[1]!=null)entities[1].render(graphics);
+        if(entities[2]!=null)entities[2].render(graphics);
         if (player != null) player.render(graphics);
     }
 
@@ -169,5 +178,14 @@ public class WorldCell implements Renderable {
     @Override
     public String toString(){
         return String.format("Cell at %s === Floor: %s", position, floor.getName());
+    }
+
+    public boolean hasAnimal(Animal a) {
+        for (Animal b: entities) {
+            if(b!=null && b.equals(a)){
+                return true;
+            }
+        }
+        return false;
     }
 }
