@@ -45,18 +45,21 @@ public class World implements Updatable, Renderable {
                     case 1:
                     case 2:
                     case 3:
+                    case 4:
                         cells[j] = new WorldCell(this, new Dirt(this, pos));
                         break;
-                    case 4:
+
                     case 5:
-                    case 6:
+
                         cells[j] = new WorldCell(this, new Lava(this, pos));
                         break;
+                    case 6:
                     case 7:
 
                     default:
                         cells[j] = new WorldCell(this, new Grass(this, pos));
-                        if(Simulation.RANDOM.nextInt(10) == 6) cells[j].setVegetation(new Bush(this, pos));
+                        if(Simulation.RANDOM.nextInt(10) == 6)
+                            cells[j].setVegetation(new Bush(this, pos));
                         break;
                 }
                 worldCells.add(cells[j]);
@@ -73,7 +76,6 @@ public class World implements Updatable, Renderable {
         } catch (ArrayIndexOutOfBoundsException e) {
             return null;
         }
-
     }
 
     public void movePlayer(Player p, Position oldPos) {
