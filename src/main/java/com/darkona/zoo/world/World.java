@@ -78,6 +78,13 @@ public class World implements Updatable, Renderable {
         }
     }
 
+    public int getWidth(){
+        return size.width;
+    }
+
+    public int getHeight(){
+        return size.height;
+    }
     public void movePlayer(Player p, Position oldPos) {
         if (getCellAt(p.position) != null && !getCellAt(p.position).hasPlayer(p)) {
             getCellAt(p.position).setPlayer(p);

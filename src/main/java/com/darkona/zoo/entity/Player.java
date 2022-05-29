@@ -47,7 +47,13 @@ public class Player extends WorldThing implements Renderable {
         }
         if(controller.isA() && movs.isEmpty()){
             Logger.debug("A pressed. Player: " + this);
-            Position des = new Position(new Random().nextInt(world.getSize().width),new Random().nextInt(world.getSize().height));
+            Position des;
+            int count = 0;
+             do {
+               des = new Position(new Random().nextInt(world.getWidth()), new Random().nextInt(world.getHeight()));
+               count++;
+             } while(count < 20 || !world.getCellAt(des).isPassable());
+
             Logger.debug("Destination: " + des);
             movs = MovementAi.traceRouteToPosition(des, this);
         }

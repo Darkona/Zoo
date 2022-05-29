@@ -1,7 +1,6 @@
 package com.darkona.zoo.entity.ai;
 
 import java.util.ArrayDeque;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -15,6 +14,7 @@ import com.darkona.zoo.entity.animal.Animal;
 import com.darkona.zoo.world.WorldCell;
 import com.darkona.zoo.world.WorldThing;
 import com.darkona.zoo.world.terrain.Water;
+import org.pmw.tinylog.Logger;
 
 public class MovementAi {
 
@@ -34,26 +34,33 @@ public class MovementAi {
         }
     }
 
+
+
     public static Stack<Movement> traceRouteToPosition(Position destination, WorldThing thing) {
-        Stack<Movement> movs = new Stack<>();
-        Stack<Movement> output = new Stack<>();
+        Stack<Movement> movements = new Stack<>();
+
         WorldCell current = thing.getCell();
         Queue<WorldCell> queue = new ArrayDeque<>();
 
-        if (findDestinationCell(current, null, destination, queue, movs, new HashMap<>(), null)) {
-            int x = 0;
+        //Stack<Movement> output = new Stack<>();
+        if (findDestinationCell(current, null, destination, queue, movements, new HashMap<>(), null)) {
+           /* int x = 0;
             int y = 0;
-            for (Movement m : movs) {
+            for (Movement m : movements) {
                 x += m.getDx();
                 y += m.getDy();
-            }
+            }*/
            /* for (int i = 0; i < Math.abs(x); i++) {
                 output.push(new Movement(Integer.compare(x,0), 0,1));
             }
             for (int i = 0; i < Math.abs(y); i++) {
                 output.push(new Movement(0, Integer.compare(y,0), 1));
             }*/
+            Logger.info("Found way to destination at " + destination);
+        }else{
+            Logger.warn("Can't find a way to destination at " + destination);
         }
+
 
         /*Comparator<Movement> scrambler = new Comparator<Movement>() {
             final Random r = new Random();
@@ -63,11 +70,63 @@ public class MovementAi {
             }
         };
         output.sort(scrambler);*/
-        return movs;
+        return movements;
+    }
+    public static Stack<Movement> traceRouteToPosition2(Position destination, WorldThing thing) {
+        Stack<Movement> movements = new Stack<>();
+        WorldCell current = thing.getCell();
+        Queue<WorldCell> queue = new ArrayDeque<>();
+        if (findDestinationCell(current, null, destination, queue, movements, new HashMap<>(), null)) {
+            Logger.info("Found way to destination at " + destination);
+        }else{
+            Logger.warn("Can't find a way to destination at " + destination);
+        }
+        return movements;
     }
 
     private static boolean findDestinationCell(WorldCell current, WorldCell prev, Position destination, Queue<WorldCell> queue, Stack<Movement> movements,
             Map<Position, Boolean> visited, Direction directionFrom) {
+        Position currentPos = new Position(current.getPosition());
+        //System.out.print("Cell at " + currentPos + " >> ");
+        queue.add(current);
+        if (!current.isPassable()) {
+            //System.out.println("Not Passable at " + currentPos);
+            return false;
+        }
+        if ((visited.get(current.getPosition()) != null && visited.get(current.getPosition()))) {
+            return false;
+        }
+        visited.put(current.getPosition(), true);
+
+        int x = 0;
+        int y = 0;
+        if (prev != null) {
+            x = current.getX() - prev.getX();
+            y = current.getY() - prev.getY();
+        }
+        if (currentPos.equals(destination)) {
+            //System.out.println("FOUND IT!!! " + currentPos);
+            current.setFloor(new Water(current.getWorld(), currentPos));
+            movements.push(new Movement(x, y, 1));
+            return true;
+        }
+
+        for (Map.Entry<Direction, WorldCell> e : current.getNeighbors().entrySet()) {
+            WorldCell cell = e.getValue();
+            if (cell != null && !cell.equals(prev)) {
+                //System.out.println("Moving search to> " + e.getKey().toString());
+                if (findDestinationCell(cell, current, destination, queue, movements, visited, e.getKey().getOpposite())) {
+                    //current.setFloor(new RedDirt(current.getWorld(), currentPos));
+                    movements.push(new Movement(x, y, 1));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean findDestinationCell(WorldCell current, WorldCell prev, Position destination, Queue<WorldCell> queue, Stack<Movement> movements,
+                                               Map<Position, Boolean> visited, Direction directionFrom) {
         Position currentPos = new Position(current.getPosition());
         //System.out.print("Cell at " + currentPos + " >> ");
         queue.add(current);
