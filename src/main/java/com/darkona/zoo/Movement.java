@@ -17,6 +17,11 @@ public class Movement {
 
     @Override
     public String toString(){
-        return "Movement: DX= " + dx + ", DY=" + dy;
+        String out = "";
+        if(dx > 0) out += "East";
+        if(dx < 0) out += "West";
+        if(dy > 0) out += "South";
+        if(dy < 0) out += "North";
+        return out;
     }
 }

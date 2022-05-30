@@ -12,7 +12,9 @@ public class Target extends Vegetation {
 
     public Target(World world, Position position) {
         super(world, position, new Size());
-        this.terrainRenderer = new TerrainRenderer( 416, 608, new Size(32, 32));
+        this.u = 416;
+        this.v = 608;
+        this.imageSize = new Size(32);
         this.name = "Target";
     }
 

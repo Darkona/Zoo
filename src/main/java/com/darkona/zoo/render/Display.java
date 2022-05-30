@@ -38,7 +38,9 @@ public class Display extends JFrame {
         graphics.setColor(Color.BLACK);
         graphics.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         simulation.getWorld().render(graphics);
+
         graphics.dispose();
+        this.pack();
         bufferStrategy.show();
     }
 }

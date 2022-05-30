@@ -11,7 +11,9 @@ public class NoVegetation extends Vegetation {
 
     public NoVegetation(World world, Position position) {
         super(world, position, new Size(1,1));
-        this.terrainRenderer = new TerrainRenderer( 448, 608, new Size(32, 32));
+        this.u = 448;
+        this.v = 608;
+        this.imageSize = new Size(32);
         this.name = "None";
     }
 

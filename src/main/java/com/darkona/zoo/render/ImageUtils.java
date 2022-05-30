@@ -29,7 +29,7 @@ public class ImageUtils {
     }
 
     public static void drawImage(Image image, WorldThing thing, Graphics graphics, int u, int v, Size size){
-
+        if(thing == null) return;
         int aX = thing.getPosition().x * SCALE;
         int aY = thing.getPosition().y * SCALE;
         int bX = aX + thing.getSize().width * SCALE;

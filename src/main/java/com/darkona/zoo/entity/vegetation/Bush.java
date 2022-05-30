@@ -9,11 +9,10 @@ import java.awt.*;
 
 public class Bush extends Vegetation {
 
-
     public Bush(World world, Position position) {
         super(world, position, new Size());
-        this.terrainRenderer = new TerrainRenderer( 352, 352, new Size(32, 32));
+        this.u = this.v = 352;
+        this.imageSize = new Size(32);
         this.name = "Bush";
     }
-
 }

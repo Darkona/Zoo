@@ -2,31 +2,33 @@ package com.darkona.zoo.world.terrain;
 
 import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
-import com.darkona.zoo.render.renderer.TerrainRenderer;
 import com.darkona.zoo.world.World;
 
-import java.awt.*;
-
 public class Lava extends Terrain{
+
+    private int u1 = 480;
+    private int steps = 0;
 
     public Lava(World world, Position position) {
         super(world, position, new Size(), TerrainType.IMPASSABLE);
         this.name = "Lava";
-        this.terrainRenderer = new TerrainRenderer(544,160, new Size(32));
-    }
-
-    @Override
-    public void render(Graphics graphics) {
-        terrainRenderer.render(graphics, this);
+        this.u = u1;
+        this.v = 160;
+        this.imageSize =  new Size(32);
     }
 
     @Override
     public void update() {
-
+        steps++;
+        u += 32;
+        if(steps == 2) {
+            steps = 0;
+            u = u1;
+        }
     }
 
     @Override
-    public int getSpeedModifier() {
-        return 0;
+    public boolean mustUpdate() {
+        return true;
     }
 }

@@ -11,22 +11,13 @@ public class RedDirt extends Terrain{
 
     public RedDirt(World world, Position position) {
         super(world, position, new Size(), TerrainType.WALKABLE);
-        this.terrainRenderer = new TerrainRenderer( 256, 160, new Size(32, 32));
+        this.u = 256;
+        this.v = 160;
+        this.imageSize = new Size(32);
         this.name = "Red Dirt";
     }
 
     @Override
-    public void render(Graphics graphics) {
-        terrainRenderer.render(graphics, this);
-    }
+    public void update() {}
 
-    @Override
-    public void update() {
-
-    }
-
-    @Override
-    public int getSpeedModifier() {
-        return 0;
-    }
 }

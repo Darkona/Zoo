@@ -8,26 +8,13 @@ import java.awt.*;
 
 public class TerrainRenderer implements Renderer{
 
-    private final int u;
-    private final int v;
-    private final Size size;
-
     private static final Image image = ImageUtils.loadImage("/terrain/ttt.png");
 
-    public TerrainRenderer(int u, int v, Size size){
-
-        this.u =u;
-        this.v = v;
-        this.size = size;
-    }
+    public TerrainRenderer(){}
 
     @Override
-    public void render(Graphics graphics, WorldThing thing) {
+    public void render(Graphics graphics, WorldThing thing, int u, int v, Size size) {
         ImageUtils.drawImage(image, thing, graphics, u, v, size);
     }
 
-    @Override
-    public Image getSprite(Graphics graphics) {
-        return image;
-    }
 }

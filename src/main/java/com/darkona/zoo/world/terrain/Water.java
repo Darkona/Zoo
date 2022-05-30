@@ -9,26 +9,29 @@ import java.awt.*;
 
 public class Water extends Terrain{
 
-
+    private final int u1 = 864;
+    private int steps = 0;
     public Water(World world, Position position) {
         super(world, position, Size.ONE_BY_ONE, TerrainType.SWIMMABLE);
-        this.terrainRenderer = new TerrainRenderer(928, 160, new Size(32, 32));
+        this.u = u1;
+        this.v = 160;
+        this.imageSize = new Size(32);
         this.name = "Water";
     }
 
     @Override
-    public void render(Graphics graphics) {
-       terrainRenderer.render(graphics, this);
-    }
-
-    @Override
-    public int getSpeedModifier() {
-        return 1;
-    }
-    @Override
     public void update() {
-
+        steps++;
+        u += 32;
+        if(steps == 2) {
+            steps = 0;
+            u = u1;
+        }
     }
 
+    @Override
+    public boolean mustUpdate() {
+        return true;
+    }
 
 }

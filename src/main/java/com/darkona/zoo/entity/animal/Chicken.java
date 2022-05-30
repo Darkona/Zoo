@@ -1,11 +1,11 @@
 package com.darkona.zoo.entity.animal;
 
 import com.darkona.zoo.Movement;
-import com.darkona.zoo.entity.ai.MovementAi;
 import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
+import com.darkona.zoo.entity.ai.MovementAi;
 import com.darkona.zoo.entity.interfaces.Walker;
-import com.darkona.zoo.render.renderer.entity.ChickenRenderer;
+import com.darkona.zoo.render.ImageUtils;
 import com.darkona.zoo.world.World;
 import com.darkona.zoo.world.terrain.TerrainType;
 import org.pmw.tinylog.Logger;
@@ -13,15 +13,17 @@ import org.pmw.tinylog.Logger;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
+
 public class Chicken extends Animal implements Walker {
 
-    private final ChickenRenderer chickenRenderer;
-    private final ArrayList<TerrainType> validTerrains = new ArrayList<TerrainType>();
+    private static final Image chickenImg = ImageUtils.loadImage("/animal/chicken.png");
+    private final ArrayList<TerrainType> validTerrains = new ArrayList<>();
 
     public Chicken(World world, Position position) {
         super(world, position, new Size());
-        this.name = "Fox";
-        this.chickenRenderer = new ChickenRenderer(2,2, new Size(28, 28));
+        this.name = "Chicken";
+        this.u = this.v = 2;
+        this.imageSize = new Size(28);
         validTerrains.add(TerrainType.WALKABLE);
         validTerrains.add(TerrainType.FLYABLE);
     }
@@ -49,34 +51,25 @@ public class Chicken extends Animal implements Walker {
 
 
     @Override
-    public void render(Graphics graphics) {
-       chickenRenderer.render(graphics, this);
-    }
-
-    private int getTerrainSpeed() {
-        return world.getField()[position.x][position.y].getFloor().getSpeedModifier();
-    }
-
-    @Override
     public void move(World world, Position destination) {
-
-        Movement mov = MovementAi.prepareDeltas(this, getTerrainSpeed());
+        Movement mov = MovementAi.prepareDeltas(this, 1);
         if (mov.isMovement()) {
             Random r = new Random();
             boolean m = r.nextBoolean();
             int movX = m ? mov.getDx() : 0;
             int movY = !m ? mov.getDy() : 0;
-
-            //int movX = mov.getDx();
-            //int movY = mov.getDy();
-
-            if (world.getField()[position.x + mov.getDx()][position.y + mov.getDy()].canPutAnimal(this) > -1){
+            if (world.getField()[position.x + mov.getDx()][position.y + mov.getDy()].canPutAnimal(this) > -1) {
                 Logger.debug("Movement: " + mov + " -- Future coords are" + new Position(position.x, position.y));
                 Position oldPos = new Position(position.x, position.y);
                 position.translate(movX, movY);
                 world.moveThing(this, oldPos);
             }
         }
+    }
+
+    @Override
+    public Image getImage() {
+        return Chicken.chickenImg;
     }
 
 

@@ -8,19 +8,19 @@ import com.darkona.zoo.entity.ai.interfaces.Renderable;
 import com.darkona.zoo.render.renderer.TerrainRenderer;
 import com.darkona.zoo.world.World;
 import com.darkona.zoo.world.WorldThing;
+import lombok.Data;
 
-public  abstract class Vegetation extends WorldThing implements Renderable {
+@Data
+public  abstract class Vegetation extends WorldThing {
 
     protected TerrainRenderer terrainRenderer;
+    protected int u;
+    protected int v;
+    protected Size imageSize;
+
     public Vegetation(World world, Position position, Size size) {
         super(position, size, world);
     }
-
-    @Override
-    public void render(Graphics graphics) {
-        if(terrainRenderer!= null) terrainRenderer.render(graphics, this);
-    }
-
 
     @Override
     public void update() {
