@@ -1,11 +1,11 @@
 package com.darkona.zoo.render.renderer.entity;
 
+import java.awt.*;
+
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.render.ImageUtils;
 import com.darkona.zoo.render.renderer.Renderer;
 import com.darkona.zoo.world.WorldThing;
-
-import java.awt.*;
 
 public class FoxRenderer implements Renderer {
 
@@ -15,7 +15,7 @@ public class FoxRenderer implements Renderer {
     private final int v;
     private final Size size;
 
-    public FoxRenderer(int u, int v, Size size){
+    public FoxRenderer(int u, int v, Size size) {
         this.u = u;
         this.v = v;
         this.size = size;
@@ -28,7 +28,7 @@ public class FoxRenderer implements Renderer {
 
     @Override
     public Image getSprite(Graphics graphics) {
-      return image;
+        return image;
     }
 
 }

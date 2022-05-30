@@ -14,7 +14,7 @@ public class Configuration extends Properties {
     private int rate = 5;
     private boolean printStats = false;
     private boolean enableLog = false;
-    private float displayScale = 2.0f;
+    private int displayScale = 4;
 
     public static Configuration getInstance() {
         return instance == null ? instance = new Configuration() : instance;
@@ -36,6 +36,6 @@ public class Configuration extends Properties {
         this.rate = Integer.parseInt(getProperty("rate"));
         this.printStats = Boolean.parseBoolean(getProperty("printStats"));
         this.enableLog = Boolean.parseBoolean(getProperty("enableLog"));
-        this.displayScale = Float.parseFloat(getProperty("displayScale"));
+        this.displayScale = Integer.parseInt(getProperty("displayScale"));
     }
 }

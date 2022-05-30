@@ -2,8 +2,6 @@ package com.darkona.zoo.entity;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
 import java.util.Stack;
 
 import com.darkona.zoo.Movement;
@@ -20,16 +18,15 @@ import com.darkona.zoo.simulation.Simulation;
 import com.darkona.zoo.world.World;
 import com.darkona.zoo.world.WorldThing;
 import com.darkona.zoo.world.terrain.TerrainType;
-import org.pmw.tinylog.Logger;
 
 
 public class Player extends WorldThing implements Renderable {
 
     private final Controller controller;
     private final PlayerRenderer playerRenderer;
+    private final ArrayList<TerrainType> validTerrains = new ArrayList<>();
     private Stack<Movement> movs;
     private Position destination;
-    private final ArrayList<TerrainType> validTerrains = new ArrayList<>();
 
     public Player(World world, Controller controller, String name) {
         super(new Position(world.getSize().width / 2, world.getSize().height / 2), new Size(), world);
@@ -47,24 +44,28 @@ public class Player extends WorldThing implements Renderable {
         Position oldPos = new Position(position.x, position.y);
         boolean moved = false;
 
-        if (!movs.isEmpty() && controller.isEscape()) movs = new Stack<>();
+        if (!movs.isEmpty() && controller.isEscape()) {
+            movs = new Stack<>();
+        }
 
         if (movs != null && !movs.isEmpty()) {
             Movement mov = movs.pop();
             position.translate(mov.getDx(), mov.getDy());
             moved = true;
         }
-        if(position.equals(destination)){
+        if (position.equals(destination)) {
             world.getCellAt(position).setVegetation(new NoVegetation(world, destination));
             destination = null;
         }
         if (controller.isA() && movs.isEmpty() && destination == null) {
-           destination = MovementAi.generateRandomDestination(this, validTerrains);
-           if(destination != null) world.getCellAt(destination).setVegetation(new Target(world, destination));
+            destination = MovementAi.generateRandomDestination(this, validTerrains);
+            if (destination != null) {
+                world.getCellAt(destination).setVegetation(new Target(world, destination));
+            }
         }
 
         if (controller.isB() && movs.isEmpty()) {
-           movs = MovementAi.traceShortestRouteToDestination(destination, this, validTerrains);
+            movs = MovementAi.traceShortestRouteToDestination(destination, this, validTerrains);
         }
 
         if (controller.isSpace()) {
@@ -93,11 +94,8 @@ public class Player extends WorldThing implements Renderable {
         if (moved) {
             world.movePlayer(this, oldPos);
         }
-        if(controller.isF()){
-            Fox f = new Fox(world,new Position( position));
-            if (world.setAnimal(f)){
-                world.addToWorld(f);
-            }
+        if (controller.isF()) {
+            world.setAnimal(new Fox(world, new Position(position)));
         }
     }
 

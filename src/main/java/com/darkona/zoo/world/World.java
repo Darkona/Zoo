@@ -2,6 +2,7 @@ package com.darkona.zoo.world;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -41,8 +42,8 @@ public class World implements Updatable, Renderable {
         for (int i = 0; i < field.length; i++) {
             WorldCell[] cells = field[i];
             for (int j = 0; j < cells.length; j++) {
-                int gauss = (int)Math.floor(Simulation.RANDOM.nextGaussian() * 10);
-                Position pos = new Position(i,j);
+                int gauss = (int) Math.floor(Simulation.RANDOM.nextGaussian() * 10);
+                Position pos = new Position(i, j);
                 switch (Math.abs(gauss)) {
                     case 0:
                     case 1:
@@ -57,11 +58,13 @@ public class World implements Updatable, Renderable {
                         break;
                     case 6:
                     case 7:
-                    case 8: cells[j] = new WorldCell(this, new Water(this, pos));
+                    case 8:
+                        cells[j] = new WorldCell(this, new Water(this, pos));
                     default:
                         cells[j] = new WorldCell(this, new Grass(this, pos));
-                        if(Simulation.RANDOM.nextInt(10) == 6)
+                        if (Simulation.RANDOM.nextInt(10) == 6) {
                             cells[j].setVegetation(new Bush(this, pos));
+                        }
                         break;
                 }
                 worldCells.add(cells[j]);
@@ -80,13 +83,14 @@ public class World implements Updatable, Renderable {
         }
     }
 
-    public int getWidth(){
+    public int getWidth() {
         return size.width;
     }
 
-    public int getHeight(){
+    public int getHeight() {
         return size.height;
     }
+
     public void movePlayer(Player p, Position oldPos) {
         if (getCellAt(p.position) != null && !getCellAt(p.position).hasPlayer(p)) {
             getCellAt(p.position).setPlayer(p);
@@ -107,8 +111,12 @@ public class World implements Updatable, Renderable {
     }
 
     public void moveThing(WorldThing thing, Position oldCoords) {
-        if (thing instanceof Animal) moveAnimal((Animal) thing, oldCoords);
-        if (thing instanceof Player) movePlayer((Player) thing, oldCoords);
+        if (thing instanceof Animal) {
+            moveAnimal((Animal) thing, oldCoords);
+        }
+        if (thing instanceof Player) {
+            movePlayer((Player) thing, oldCoords);
+        }
     }
 
     public void removePlayerFrom(Player p, Position pos) {
@@ -120,8 +128,10 @@ public class World implements Updatable, Renderable {
         }
     }
 
-    public boolean setAnimal(Animal a) {
-        return field[a.position.x][a.position.y].setAnimal(a);
+    public void setAnimal(Animal a) {
+        if (field[a.position.x][a.position.y].setAnimal(a)) {
+            addToWorld(a);
+        }
     }
 
     public void setTerrain(Terrain t) {
@@ -145,27 +155,29 @@ public class World implements Updatable, Renderable {
 
     @Override
     public void render(Graphics graphics) {
-        for (int i = 0; i < getWidth(); i++) {
-            for (int j = 0; j < getHeight(); j++) {
-                field[i][j].render(graphics);
-            }
-        }
+        Arrays
+                .stream(field).forEach(c -> Arrays
+                        .stream(c).forEach(d -> d.render(graphics)));
     }
 
     @Override
     public void update() {
-        while(!addedToWorld.isEmpty()){
+
+        while (!addedToWorld.isEmpty()) {
             updatables.add(addedToWorld.pop());
         }
-        for (Updatable updatable : updatables) {
-            if (updatable instanceof Player) {
-                updatable.update();
-            }
-            else if (!Simulation.PAUSED) {
-                updatable.update();
-            }
-        }
 
+        updatables.forEach(updatable -> {
+                    if (updatable instanceof Player) {
+                        updatable.update();
+                    }
+                    else if (!Simulation.PAUSED) {
+                        updatable.update();
+                    }
+                });
+
+        Arrays .stream(field).forEach(c -> Arrays
+                        .stream(c).forEach(WorldCell::update));
     }
 
 }

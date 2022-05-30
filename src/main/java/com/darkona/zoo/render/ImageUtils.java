@@ -1,5 +1,6 @@
 package com.darkona.zoo.render;
 
+import com.darkona.zoo.Configuration;
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.world.WorldThing;
 import org.pmw.tinylog.Logger;
@@ -9,8 +10,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
-
-import static com.darkona.zoo.simulation.Simulation.SCALE;
 
 public class ImageUtils {
     public static Image loadImage(String filePath){
@@ -27,6 +26,7 @@ public class ImageUtils {
     }
 
     public static void drawImage(Image image, WorldThing thing, Graphics graphics, int u, int v, Size size){
+        int SCALE = Configuration.getInstance().getDisplayScale();
         int aX = thing.getPosition().x * SCALE;
         int aY = thing.getPosition().y * SCALE;
         int bX = aX + thing.getSize().width * SCALE;
