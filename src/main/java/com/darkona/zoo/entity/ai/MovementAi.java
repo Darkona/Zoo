@@ -100,7 +100,7 @@ public class MovementAi {
                 int dx = cell.getX() - test.getX();
                 int dy = cell.getY() - test.getY();
                 movements.push(new Movement(dx, dy,1));
-                if(visited.get(test.getPosition())) break;
+                if(test != null && visited.get(test.getPosition())) break;
                 if (test.getPosition().equals(destination)) {
                     found = true;
                     break;

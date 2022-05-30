@@ -39,6 +39,9 @@ public class Player extends WorldThing implements Renderable {
     public void update() {
         Position oldPos = new Position(position.x,position.y);
         boolean moved = false;
+        if(!movs.isEmpty() && controller.isEscape()){
+            movs = new Stack<>();
+        }
         if(movs != null && !movs.isEmpty()){
             Movement mov = movs.pop();
             Logger.debug("Movement: " + mov + " -- Future coords are" + new Position(position.x + mov.getDx(), position.y + mov.getDy()));
@@ -55,7 +58,7 @@ public class Player extends WorldThing implements Renderable {
              } while(count < 20 || !world.getCellAt(des).isPassable());
 
             Logger.debug("Destination: " + des);
-            movs = MovementAi.traceRouteToPosition(des, this);
+            movs = MovementAi.traceRouteToPosition2(des, this);
         }
         if(controller.isB() && movs.isEmpty()){
             Logger.debug("B pressed. Player: " + this);
@@ -66,7 +69,7 @@ public class Player extends WorldThing implements Renderable {
                 count++;
             } while(count < 20 || !world.getCellAt(des).isPassable());
             Logger.debug("Destination: " + des);
-            movs = MovementAi.traceRouteToPosition2(des, this);
+            movs = MovementAi.traceRouteToPosition(des, this);
         }
         if(controller.isSpace()){
             Simulation.PAUSED = !Simulation.PAUSED;

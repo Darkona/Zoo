@@ -25,7 +25,6 @@ public class PlayerController implements Controller{
     @Override
     public boolean isRequestingLeft() {
         return input.isPressed(KeyEvent.VK_LEFT);
-
     }
 
     @Override
@@ -36,6 +35,11 @@ public class PlayerController implements Controller{
     @Override
     public boolean isSpace() {
         return input.isPressed(KeyEvent.VK_SPACE);
+    }
+
+    @Override
+    public boolean isEscape() {
+        return input.isPressed(KeyEvent.VK_ESCAPE);
     }
 
     @Override

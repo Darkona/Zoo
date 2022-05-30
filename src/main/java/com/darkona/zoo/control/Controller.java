@@ -8,6 +8,8 @@ public interface Controller {
     boolean isRequestingRight();
     boolean isSpace();
 
+    boolean isEscape();
+
     boolean isA();
     boolean isB();
 }
