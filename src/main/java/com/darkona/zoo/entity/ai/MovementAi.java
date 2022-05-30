@@ -2,6 +2,7 @@ package com.darkona.zoo.entity.ai;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
@@ -35,50 +36,20 @@ public class MovementAi {
     }
 
 
-
     public static Stack<Movement> traceRouteToPosition(Position destination, WorldThing thing) {
-        Stack<Movement> movements = new Stack<>();
 
         WorldCell current = thing.getCell();
-        Queue<WorldCell> queue = new ArrayDeque<>();
-
-        //Stack<Movement> output = new Stack<>();
-        if (findDestinationCell(current, null, destination, queue, movements, new HashMap<>(), null)) {
-           /* int x = 0;
-            int y = 0;
-            for (Movement m : movements) {
-                x += m.getDx();
-                y += m.getDy();
-            }*/
-           /* for (int i = 0; i < Math.abs(x); i++) {
-                output.push(new Movement(Integer.compare(x,0), 0,1));
-            }
-            for (int i = 0; i < Math.abs(y); i++) {
-                output.push(new Movement(0, Integer.compare(y,0), 1));
-            }*/
-            Logger.info("Found way to destination at " + destination);
-        }else{
-            Logger.warn("Can't find a way to destination at " + destination);
-        }
-
-
-        /*Comparator<Movement> scrambler = new Comparator<Movement>() {
-            final Random r = new Random();
-            @Override
-            public int compare(Movement o1, Movement o2) {
-                return r.nextInt(3) - 1;
-            }
-        };
-        output.sort(scrambler);*/
-        return movements;
+        return findDestinationCell2(current, destination);
     }
+
     public static Stack<Movement> traceRouteToPosition2(Position destination, WorldThing thing) {
         Stack<Movement> movements = new Stack<>();
         WorldCell current = thing.getCell();
         Queue<WorldCell> queue = new ArrayDeque<>();
         if (findDestinationCell(current, null, destination, queue, movements, new HashMap<>(), null)) {
             Logger.info("Found way to destination at " + destination);
-        }else{
+        }
+        else {
             Logger.warn("Can't find a way to destination at " + destination);
         }
         return movements;
@@ -87,36 +58,24 @@ public class MovementAi {
     private static boolean findDestinationCell(WorldCell current, WorldCell prev, Position destination, Queue<WorldCell> queue, Stack<Movement> movements,
             Map<Position, Boolean> visited, Direction directionFrom) {
         Position currentPos = new Position(current.getPosition());
-        //System.out.print("Cell at " + currentPos + " >> ");
         queue.add(current);
-        if (!current.isPassable()) {
-            //System.out.println("Not Passable at " + currentPos);
-            return false;
-        }
-        if ((visited.get(current.getPosition()) != null && visited.get(current.getPosition()))) {
-            return false;
-        }
+        if (!current.isPassable()) return false;
+        if ((visited.get(current.getPosition()) != null && visited.get(current.getPosition()))) return false;
         visited.put(current.getPosition(), true);
-
-        int x = 0;
-        int y = 0;
+        int x = 0, y = 0;
         if (prev != null) {
             x = current.getX() - prev.getX();
             y = current.getY() - prev.getY();
         }
         if (currentPos.equals(destination)) {
-            //System.out.println("FOUND IT!!! " + currentPos);
             current.setFloor(new Water(current.getWorld(), currentPos));
             movements.push(new Movement(x, y, 1));
             return true;
         }
-
         for (Map.Entry<Direction, WorldCell> e : current.getNeighbors().entrySet()) {
             WorldCell cell = e.getValue();
             if (cell != null && !cell.equals(prev)) {
-                //System.out.println("Moving search to> " + e.getKey().toString());
                 if (findDestinationCell(cell, current, destination, queue, movements, visited, e.getKey().getOpposite())) {
-                    //current.setFloor(new RedDirt(current.getWorld(), currentPos));
                     movements.push(new Movement(x, y, 1));
                     return true;
                 }
@@ -125,44 +84,33 @@ public class MovementAi {
         return false;
     }
 
-    private static boolean findDestinationCell(WorldCell current, WorldCell prev, Position destination, Queue<WorldCell> queue, Stack<Movement> movements,
-                                               Map<Position, Boolean> visited, Direction directionFrom) {
-        Position currentPos = new Position(current.getPosition());
-        //System.out.print("Cell at " + currentPos + " >> ");
+    private static Stack<Movement> findDestinationCell2(WorldCell current, Position destination) {
+
+        HashMap<Position, Boolean> visited = new HashMap<>();
+        Queue<WorldCell> queue = new LinkedList<>();
         queue.add(current);
-        if (!current.isPassable()) {
-            //System.out.println("Not Passable at " + currentPos);
-            return false;
-        }
-        if ((visited.get(current.getPosition()) != null && visited.get(current.getPosition()))) {
-            return false;
-        }
         visited.put(current.getPosition(), true);
-
-        int x = 0;
-        int y = 0;
-        if (prev != null) {
-            x = current.getX() - prev.getX();
-            y = current.getY() - prev.getY();
-        }
-        if (currentPos.equals(destination)) {
-            //System.out.println("FOUND IT!!! " + currentPos);
-            current.setFloor(new Water(current.getWorld(), currentPos));
-            movements.push(new Movement(x, y, 1));
-            return true;
-        }
-
-        for (Map.Entry<Direction, WorldCell> e : current.getNeighbors().entrySet()) {
-            WorldCell cell = e.getValue();
-            if (cell != null && !cell.equals(prev)) {
-                //System.out.println("Moving search to> " + e.getKey().toString());
-                if (findDestinationCell(cell, current, destination, queue, movements, visited, e.getKey().getOpposite())) {
-                    //current.setFloor(new RedDirt(current.getWorld(), currentPos));
-                    movements.push(new Movement(x, y, 1));
-                    return true;
+        boolean found = false;
+        Stack<Movement> movements = null;
+        while (queue.peek() != null && !found) {
+            movements = new Stack<>();
+            WorldCell cell = queue.poll();
+            for (Direction dir : cell.getNeighbors().keySet()) {
+                WorldCell test = cell.getNeighbors().get(dir);
+                int dx = cell.getX() - test.getX();
+                int dy = cell.getY() - test.getY();
+                movements.push(new Movement(dx, dy,1));
+                if(visited.get(test.getPosition())) break;
+                if (test.getPosition().equals(destination)) {
+                    found = true;
+                    break;
+                }
+                else if (test.isPassable()) {
+                    visited.put(test.getPosition(), true);
+                    queue.add(test);
                 }
             }
         }
-        return false;
+        return movements;
     }
 }

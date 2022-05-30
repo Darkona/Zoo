@@ -9,4 +9,5 @@ public interface Controller {
     boolean isSpace();
 
     boolean isA();
+    boolean isB();
 }
