@@ -2,10 +2,12 @@ package com.darkona.zoo.entity.ai;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
 import java.util.Stack;
 
 import com.darkona.zoo.Movement;
@@ -35,14 +37,7 @@ public class MovementAi {
         }
     }
 
-
     public static Stack<Movement> traceRouteToPosition(Position destination, WorldThing thing) {
-
-        WorldCell current = thing.getCell();
-        return findDestinationCell2(current, destination);
-    }
-
-    public static Stack<Movement> traceRouteToPosition2(Position destination, WorldThing thing) {
         Stack<Movement> movements = new Stack<>();
         WorldCell current = thing.getCell();
         Queue<WorldCell> queue = new ArrayDeque<>();
@@ -57,10 +52,17 @@ public class MovementAi {
 
     private static boolean findDestinationCell(WorldCell current, WorldCell prev, Position destination, Queue<WorldCell> queue, Stack<Movement> movements,
             Map<Position, Boolean> visited, Direction directionFrom) {
+        if (current == null) {
+            return false;
+        }
         Position currentPos = new Position(current.getPosition());
         queue.add(current);
-        if (!current.isPassable()) return false;
-        if ((visited.get(current.getPosition()) != null && visited.get(current.getPosition()))) return false;
+        if (!current.isPassable()) {
+            return false;
+        }
+        if ((visited.get(current.getPosition()) != null && visited.get(current.getPosition()))) {
+            return false;
+        }
         visited.put(current.getPosition(), true);
         int x = 0, y = 0;
         if (prev != null) {
@@ -84,32 +86,56 @@ public class MovementAi {
         return false;
     }
 
-    private static Stack<Movement> findDestinationCell2(WorldCell current, Position destination) {
 
-        HashMap<Position, Boolean> visited = new HashMap<>();
+    public static Stack<Movement> traceRouteToPosition2(Position destination, WorldThing thing) {
+        WorldCell current = thing.getCell();
+        return findDestinationCell2(current, destination);
+    }
+
+    private static Stack<Movement> findDestinationCell2(WorldCell current, Position destination) {
+        Position initialPosition = new Position(current.getPosition());
+        Set<Position> visited = new HashSet<>();
         Queue<WorldCell> queue = new LinkedList<>();
+        Stack<Movement> movements = new Stack<>();
+        if (current == null) {
+            return movements;
+        }
+        //movements.push();
         queue.add(current);
-        visited.put(current.getPosition(), true);
-        boolean found = false;
-        Stack<Movement> movements = null;
-        while (queue.peek() != null && !found) {
-            movements = new Stack<>();
+        visited.add(current.getPosition());
+        HashMap<Position, Position> previous = new HashMap<>();
+        Position foundPos = null;
+        while (queue.peek() != null && foundPos == null) {
             WorldCell cell = queue.poll();
-            for (Direction dir : cell.getNeighbors().keySet()) {
-                WorldCell test = cell.getNeighbors().get(dir);
-                int dx = cell.getX() - test.getX();
-                int dy = cell.getY() - test.getY();
-                movements.push(new Movement(dx, dy,1));
-                if(test != null && visited.get(test.getPosition())) break;
-                if (test.getPosition().equals(destination)) {
-                    found = true;
-                    break;
-                }
-                else if (test.isPassable()) {
-                    visited.put(test.getPosition(), true);
+            if (cell.getPosition().equals(destination)) {
+                foundPos = cell.getPosition();
+                break;
+            }
+            for (WorldCell test : cell.getNeighbors().values()) {
+                if (!visited.contains(test.getPosition()) && test.isPassable()) {
+                    visited.add(test.getPosition());
                     queue.add(test);
+                    previous.put(test.getPosition(), cell.getPosition());
                 }
             }
+        }
+        try {
+            if (foundPos != null) {
+                Position search = previous.get(foundPos);
+                Position curPos = foundPos;
+                while (search != null && !initialPosition.equals(search)) {
+                    int dX = curPos.x - search.x;
+                    int dY = curPos.y - search.y;
+                    movements.push(new Movement(dX, dY, 1));
+                    curPos = search;
+                    search = previous.get(curPos);
+                }
+                int dX = curPos.x - search.x;
+                int dY = curPos.y - search.y;
+                movements.push(new Movement(dX, dY, 1));
+            }
+        } catch (NullPointerException e) {
+            //do nothing just dont fail
         }
         return movements;
     }

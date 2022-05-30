@@ -1,5 +1,7 @@
 package com.darkona.zoo.entity.vegetation;
 
+import java.awt.*;
+
 import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.entity.ai.interfaces.Renderable;
@@ -14,5 +16,14 @@ public  abstract class Vegetation extends WorldThing implements Renderable {
         super(position, size, world);
     }
 
+    @Override
+    public void render(Graphics graphics) {
+        if(terrainRenderer!= null) terrainRenderer.render(graphics, this);
+    }
 
+
+    @Override
+    public void update() {
+
+    }
 }

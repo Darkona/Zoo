@@ -17,6 +17,7 @@ import com.darkona.zoo.world.terrain.Dirt;
 import com.darkona.zoo.world.terrain.Grass;
 import com.darkona.zoo.world.terrain.Lava;
 import com.darkona.zoo.world.terrain.Terrain;
+import com.darkona.zoo.world.terrain.Water;
 import lombok.Data;
 
 @Data
@@ -44,18 +45,17 @@ public class World implements Updatable, Renderable {
                     case 0:
                     case 1:
                     case 2:
-                    case 3:
-                    case 4:
                         cells[j] = new WorldCell(this, new Dirt(this, pos));
                         break;
 
+                    case 3:
+                    case 4:
                     case 5:
-
                         cells[j] = new WorldCell(this, new Lava(this, pos));
                         break;
                     case 6:
                     case 7:
-
+                    case 8: cells[j] = new WorldCell(this, new Water(this, pos));
                     default:
                         cells[j] = new WorldCell(this, new Grass(this, pos));
                         if(Simulation.RANDOM.nextInt(10) == 6)
