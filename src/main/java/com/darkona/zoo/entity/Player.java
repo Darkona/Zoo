@@ -33,7 +33,8 @@ public class Player extends WorldThing {
     private Stack<Movement> movements;
     private Position destination;
     private int step = 0;
-    private int speed = 3;
+    private int speed = 4;
+
     public Player(World world, Controller controller, String name) {
         super(new Position(world.getSize().width / 2, world.getSize().height / 2), new Size(), world);
         this.controller = controller;
@@ -45,7 +46,7 @@ public class Player extends WorldThing {
     }
 
     private void createAnimal(String animal) {
-        world.getWorldCreator().createAnimal(animal, new Position( position));
+        world.getWorldCreator().createAnimal(animal, new Position(position));
     }
 
     @Override
@@ -53,40 +54,35 @@ public class Player extends WorldThing {
         Position oldPos = new Position(position.x, position.y);
         boolean moved = false;
 
-        if(step == 0){
+        if (step == 0 || step == 2 || step == 3) {
             if (movements != null && !movements.isEmpty()) {
                 Movement mov = movements.pop();
                 position.translate(mov.getDx(), mov.getDy());
                 moved = true;
             }
             if (controller.isRequestingUp() && position.y > 0) {
-               // destination = new Position(position, 0, -1);
                 position.translate(0, -1);
-                //movements = MovementAi.traceShortestRouteToDestination(destination, this, validTerrains);
                 moved = true;
             }
             if (controller.isRequestingDown() && position.y < world.getField()[0].length - 1) {
-                destination = new Position(position, 0, 1);
-                movements = MovementAi.traceShortestRouteToDestination(destination, this, validTerrains);
+                position.translate(0, 1);
                 moved = true;
             }
             if (controller.isRequestingLeft() && position.x > 0) {
-                destination = new Position(position, -1, 0);
-                movements = MovementAi.traceShortestRouteToDestination(destination, this, validTerrains);
+                position.translate(-1, 0);
                 moved = true;
             }
             if (controller.isRequestingRight() && position.x < world.getField().length - 1) {
-                destination = new Position(position, 1, 0);
-                movements = MovementAi.traceShortestRouteToDestination(destination, this, validTerrains);
+                position.translate(1, 0);
                 moved = true;
             }
         }
-        if(step == 1) {
+        if (step == 1) {
             if (!movements.isEmpty() && controller.isEscape()) {
                 movements = new Stack<>();
             }
             if (position.equals(destination)) {
-                if(world.getCellAt(position).getVegetation().getName().equals("Target"))
+                if (world.getCellAt(position).getVegetation().getName().equals("Target"))
                     world.getCellAt(position).setVegetation(new NoVegetation(world, destination));
                 destination = null;
             }
@@ -114,7 +110,6 @@ public class Player extends WorldThing {
         if (moved) {
             world.movePlayer(this, oldPos);
         }
-
 
         if (controller.isF()) {
             createAnimal("Fox");
