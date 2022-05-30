@@ -40,30 +40,6 @@ public class WorldCell implements Renderable {
     private WorldCell south;
     private WorldCell west;
 
-    public WorldCell(World world, Position position) {
-        if (position.x < 10 && position.y < 10) {
-            floor = new Dirt(world, position);
-        } else if (position.x > 40 || position.y > 40) {
-            floor = new Grass(world, position);
-        } else {
-            switch (random.nextInt(2)) {
-                case 0:
-                    floor = new Grass(world, position);
-                    break;
-                case 2:
-                    floor = new Water(world, position);
-                    break;
-                default:
-                    floor = new Dirt(world, position);
-                    break;
-            }
-        }
-        vegetation = new NoVegetation(world, position);
-        entities = new Animal[3];
-        this.position = position;
-        this.world = world;
-    }
-
     public WorldCell(World world, Terrain terrain) {
         this.vegetation = new NoVegetation(world, terrain.getPosition());
         this.entities = new Animal[3];
@@ -92,6 +68,7 @@ public class WorldCell implements Renderable {
     public int getY(){
         return position.y;
     }
+
     public boolean isPassable() {
         return floor.getTerrainType() != TerrainType.IMPASSABLE;
     }
@@ -103,29 +80,8 @@ public class WorldCell implements Renderable {
                 .orElse(-1);
     }
 
-
-    public boolean hasPlayer(){
-        return player != null;
-    }
-
     public boolean hasPlayer(Player p){
         return player != null && player.equals(p);
-    }
-
-    public int exists(WorldThing thing) {
-        try {
-            if (thing == null) return -2;
-            if (thing instanceof Swimmer && entities[0].equals(thing)) return 0;
-            if (thing instanceof Walker && entities[1].equals(thing)) return 1;
-            if (thing instanceof Flier && entities[2].equals(thing)) return 2;
-            if (thing instanceof Player && hasPlayer((Player) thing)) return 3;
-            if (thing instanceof Terrain && floor.equals(thing)) return 4;
-            if (thing instanceof Vegetation && vegetation.equals(thing)) return 5;
-            return -1;
-        } catch (Exception e) {
-            return -3;
-        }
-
     }
 
     public boolean setAnimal(Animal a) {
@@ -138,43 +94,20 @@ public class WorldCell implements Renderable {
         return false;
     }
 
-
     @Override
     public void render(Graphics graphics) {
         floor.render(graphics);
-        vegetation.render(graphics);
-        if(entities[0]!=null)entities[0].render(graphics);
-        if(entities[1]!=null)entities[1].render(graphics);
-        if(entities[2]!=null)entities[2].render(graphics);
+        if(vegetation!= null)vegetation.render(graphics);
+        if(entities[0]!=null) entities[0].render(graphics);
+        if(entities[1]!=null) entities[1].render(graphics);
+        if(entities[2]!=null) entities[2].render(graphics);
         if (player != null) player.render(graphics);
-    }
-
-
-    public void remove(WorldThing thing) {
-        int found = exists(thing);
-        if (found > -1) {
-            switch (found) {
-                case 0:
-                case 1:
-                case 2:
-                    this.entities[found] = null;
-                    break;
-                case 3:
-                    this.player = null;
-                    break;
-                case 4:
-                    this.floor = null;
-                    break;
-                case 5:
-                    this.vegetation = null;
-                    break;
-            }
-        }
     }
 
     public HashMap<Direction, WorldCell> getNeighbors(){
         return neighbors;
     }
+
     @Override
     public String toString(){
         return String.format("Cell at %s === Floor: %s", position, floor.getName());
@@ -187,5 +120,13 @@ public class WorldCell implements Renderable {
             }
         }
         return false;
+    }
+
+    public void removeAnimal(Animal a) {
+        for (int i = 0; i < 3 ; i++) {
+            if (entities[i] != null && entities[i].equals(a)) {
+                entities[i] = null;
+            }
+        }
     }
 }

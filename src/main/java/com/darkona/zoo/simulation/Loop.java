@@ -4,7 +4,6 @@ import com.darkona.zoo.Configuration;
 import lombok.Data;
 import org.pmw.tinylog.Logger;
 
-
 @Data
 public class Loop implements Runnable{
 
@@ -12,7 +11,7 @@ public class Loop implements Runnable{
     private final Configuration configuration = Configuration.getInstance();
     private boolean running;
     private final double updateRate = 1.0d/configuration.getRate();
-    private final double renderRate = 1.0d/120.0d;
+    private final double renderRate = 1.0d/60.0d;
     private long nextStatTime;
     private int fps, ups;
 
@@ -39,7 +38,7 @@ public class Loop implements Runnable{
                     upsAcc -= updateRate;
                 }
             }
-            if(fpsAcc > updateRate){
+            if(fpsAcc > renderRate){
                 render();
                 fpsAcc = 0;
             }

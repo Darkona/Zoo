@@ -3,7 +3,7 @@ package com.darkona.zoo.simulation;
 import com.darkona.zoo.entity.Player;
 import com.darkona.zoo.entity.animal.Fox;
 import com.darkona.zoo.common.Position;
-import com.darkona.zoo.common.Input;
+import com.darkona.zoo.control.Input;
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.control.PlayerController;
 import com.darkona.zoo.render.Display;

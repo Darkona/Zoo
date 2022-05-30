@@ -7,75 +7,56 @@ import com.darkona.zoo.common.Size;
 import com.darkona.zoo.entity.interfaces.Walker;
 import com.darkona.zoo.render.renderer.entity.FoxRenderer;
 import com.darkona.zoo.world.World;
+import com.darkona.zoo.world.terrain.TerrainType;
 import org.pmw.tinylog.Logger;
 
 import java.awt.*;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Stack;
 
 
 public class Fox extends Animal implements Walker {
 
     private final FoxRenderer renderer;
-
+    private Stack<Movement> movs;
+    private final ArrayList<TerrainType> validTerrains = new ArrayList<>();
 
     public Fox(World world, Position position) {
         super(world, position, new Size());
         this.name = "Fox";
         this.renderer = new FoxRenderer(5, 16, new Size(20, 16));
+        this.movs = new Stack<>();
+        this.validTerrains.add(TerrainType.WALKABLE);
     }
-
 
     @Override
     public void update() {
-        if (destination != null) {
-            Logger.debug("Trying to move to destination " + destination);
-            move(world, destination);
-        }
+        if(position.equals(destination)) destination = null;
 
-        if (position.equals(destination)) {
-            Logger.debug("Already at destination. Position: " + position + " and destination: " + destination);
-            destination = null;
-        }
+        if(destination != null && movs.isEmpty())
+            movs = MovementAi.traceShortestRouteToDestination(destination, this, validTerrains);
 
         if (destination == null) {
             Logger.debug("No destination. Generating new destination.");
-            MovementAi.generateRandomDestination(this);
-            if (destination != null) Logger.debug("New destination: " + destination);
+            destination = MovementAi.generateRandomDestination(this, validTerrains);
+            if (destination != null) {
+                Logger.debug("New destination: " + destination);
+            }
         }
+        if(destination != null) move(world, destination);
     }
 
     @Override
     public void render(Graphics graphics) {
-        this.renderer.render(graphics, this);
-    }
-
-    private int getTerrainSpeed() {
-        return currentCell.getFloor().getSpeedModifier();
+        renderer.render(graphics, this);
     }
 
     @Override
     public void move(World world, Position destination) {
-
-        Movement mov = MovementAi.prepareDeltas(this, getTerrainSpeed());
-        if (mov.isMovement()) {
-            Random r = new Random();
-            boolean m = r.nextBoolean();
-            int movX = m ? mov.getDx() : 0;
-            int movY = !m ? mov.getDy() : 0;
-
-            //int movX = mov.getDx();
-            //int movY = mov.getDy();
-            Position oldPos = new Position(position.x, position.y);
-            Position newPos = new Position(position, mov.getDx(), mov.getDy());
-            if (world.getCellAt(newPos).canPutAnimal(this) > -1) {
-                Logger.debug("Movement: " + mov + " -- Current coords are: " + position + " || 0." +
-                        "" +
-                        "" +
-                        "Future coords are: " + new Position(position.x + mov.getDx(),
-                        position.y + mov.getDy()));
-                position.translate(movX, movY);
-                world.moveThing(this, oldPos);
-            }
+        if (movs != null && !movs.isEmpty()) {
+            Movement mov = movs.pop();
+            position.translate(mov.getDx(), mov.getDy());
+            world.moveAnimal(this, position);
         }
     }
 

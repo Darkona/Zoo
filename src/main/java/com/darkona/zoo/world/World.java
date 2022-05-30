@@ -3,6 +3,7 @@ package com.darkona.zoo.world;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import com.darkona.zoo.common.Position;
 import com.darkona.zoo.common.Size;
@@ -24,7 +25,7 @@ import lombok.Data;
 public class World implements Updatable, Renderable {
 
     private List<Updatable> updatables;
-
+    private Stack<Updatable> addedToWorld;
     private List<Updatable> updatedTings;
 
     private WorldCell[][] field;
@@ -35,7 +36,8 @@ public class World implements Updatable, Renderable {
         this.size = size;
         this.field = new WorldCell[size.width][size.height];
         this.worldCells = new ArrayList<>();
-        updatables = new ArrayList<>();
+        this.updatables = new ArrayList<>();
+        this.addedToWorld = new Stack<>();
         for (int i = 0; i < field.length; i++) {
             WorldCell[] cells = field[i];
             for (int j = 0; j < cells.length; j++) {
@@ -96,7 +98,7 @@ public class World implements Updatable, Renderable {
         Position pos = a.position;
         if (getCellAt(pos) != null && !getCellAt(pos).hasAnimal(a)) {
             if (getCellAt(pos).setAnimal(a)) {
-                getCellAt(pos).remove(a);
+                getCellAt(pos).removeAnimal(a);
             }
             else {
                 a.position = oldPos;
@@ -115,14 +117,6 @@ public class World implements Updatable, Renderable {
         }
         if (getCellAt(pos).hasPlayer(p)) {
             getCellAt(pos).setPlayer(null);
-        }
-    }
-
-    public void removeThingFrom(Position c, WorldThing thing) {
-        try {
-            field[c.x][c.y].remove(thing);
-        } catch (Exception e) {
-            // no op
         }
     }
 
@@ -145,14 +139,14 @@ public class World implements Updatable, Renderable {
 
     public void addToWorld(WorldThing thing) {
         if (thing != null) {
-            updatables.add(thing);
+            addedToWorld.push(thing);
         }
     }
 
     @Override
     public void render(Graphics graphics) {
-        for (int i = 0; i < field.length; i++) {
-            for (int j = 0; j < field[i].length; j++) {
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
                 field[i][j].render(graphics);
             }
         }
@@ -160,6 +154,9 @@ public class World implements Updatable, Renderable {
 
     @Override
     public void update() {
+        while(!addedToWorld.isEmpty()){
+            updatables.add(addedToWorld.pop());
+        }
         for (Updatable updatable : updatables) {
             if (updatable instanceof Player) {
                 updatable.update();

@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
@@ -14,8 +15,10 @@ import com.darkona.zoo.Movement;
 import com.darkona.zoo.common.Direction;
 import com.darkona.zoo.common.Position;
 import com.darkona.zoo.entity.animal.Animal;
+import com.darkona.zoo.world.World;
 import com.darkona.zoo.world.WorldCell;
 import com.darkona.zoo.world.WorldThing;
+import com.darkona.zoo.world.terrain.TerrainType;
 import com.darkona.zoo.world.terrain.Water;
 import org.pmw.tinylog.Logger;
 
@@ -28,16 +31,23 @@ public class MovementAi {
         return new Movement(deltaX, deltaY, speed);
     }
 
-    public static void generateRandomDestination(Animal animal) {
-        Random r = new Random();
-        int x = r.nextInt(animal.getWorld().getSize().width);
-        int y = r.nextInt(animal.getWorld().getSize().height);
-        if (animal.getWorld().getField()[x][y].canPutAnimal(animal) > -1) {
-            animal.setDestination(new Position(x, y));
+    public static Position generateRandomDestination(WorldThing thing, List<TerrainType> passables) {
+        World w = thing.getWorld();
+        Position destination;
+        try {
+            int count = 0;
+            do {
+                destination  = new Position(new Random().nextInt(w.getWidth() ), new Random().nextInt(w.getHeight() ));
+            } while (++count < 20 || !passables.contains(w.getCellAt(destination).getFloor().getTerrainType()));
+            return destination;
+        } catch (Exception e) {
+            Logger.error("Error!");
+            e.printStackTrace();
+            return null;
         }
     }
 
-    public static Stack<Movement> traceRouteToPosition(Position destination, WorldThing thing) {
+    public static Stack<Movement> traceWorstRouteToDestination(Position destination, WorldThing thing) {
         Stack<Movement> movements = new Stack<>();
         WorldCell current = thing.getCell();
         Queue<WorldCell> queue = new ArrayDeque<>();
@@ -87,32 +97,29 @@ public class MovementAi {
     }
 
 
-    public static Stack<Movement> traceRouteToPosition2(Position destination, WorldThing thing) {
+    public static Stack<Movement> traceShortestRouteToDestination(Position destination, WorldThing thing, List<TerrainType> validTerrains) {
         WorldCell current = thing.getCell();
-        return findDestinationCell2(current, destination);
+        return findDestinationCell2(current, destination, validTerrains);
     }
 
-    private static Stack<Movement> findDestinationCell2(WorldCell current, Position destination) {
+    private static Stack<Movement> findDestinationCell2(WorldCell current, Position destination, List<TerrainType> validTerrains) {
         Position initialPosition = new Position(current.getPosition());
         Set<Position> visited = new HashSet<>();
         Queue<WorldCell> queue = new LinkedList<>();
         Stack<Movement> movements = new Stack<>();
-        if (current == null) {
-            return movements;
-        }
         //movements.push();
         queue.add(current);
         visited.add(current.getPosition());
         HashMap<Position, Position> previous = new HashMap<>();
         Position foundPos = null;
-        while (queue.peek() != null && foundPos == null) {
+        while (queue.peek() != null) {
             WorldCell cell = queue.poll();
             if (cell.getPosition().equals(destination)) {
                 foundPos = cell.getPosition();
                 break;
             }
             for (WorldCell test : cell.getNeighbors().values()) {
-                if (!visited.contains(test.getPosition()) && test.isPassable()) {
+                if (!visited.contains(test.getPosition()) && validTerrains.contains(test.getFloor().getTerrainType())) {
                     visited.add(test.getPosition());
                     queue.add(test);
                     previous.put(test.getPosition(), cell.getPosition());
@@ -130,12 +137,14 @@ public class MovementAi {
                     curPos = search;
                     search = previous.get(curPos);
                 }
-                int dX = curPos.x - search.x;
-                int dY = curPos.y - search.y;
-                movements.push(new Movement(dX, dY, 1));
+                if(search != null) {
+                    int dX = curPos.x - search.x;
+                    int dY = curPos.y - search.y;
+                    movements.push(new Movement(dX, dY, 1));
+                }
             }
         } catch (NullPointerException e) {
-            //do nothing just dont fail
+            e.printStackTrace();
         }
         return movements;
     }

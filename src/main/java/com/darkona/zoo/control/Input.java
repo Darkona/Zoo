@@ -1,4 +1,4 @@
-package com.darkona.zoo.common;
+package com.darkona.zoo.control;
 
 import lombok.Data;
 import lombok.extern.java.Log;

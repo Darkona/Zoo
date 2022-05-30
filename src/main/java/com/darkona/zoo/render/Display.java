@@ -1,7 +1,7 @@
 package com.darkona.zoo.render;
 
 import com.darkona.zoo.Configuration;
-import com.darkona.zoo.common.Input;
+import com.darkona.zoo.control.Input;
 import com.darkona.zoo.common.Size;
 import com.darkona.zoo.simulation.Simulation;
 

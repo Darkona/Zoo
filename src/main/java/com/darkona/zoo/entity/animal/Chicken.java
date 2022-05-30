@@ -7,17 +7,23 @@ import com.darkona.zoo.common.Size;
 import com.darkona.zoo.entity.interfaces.Walker;
 import com.darkona.zoo.render.renderer.entity.ChickenRenderer;
 import com.darkona.zoo.world.World;
+import com.darkona.zoo.world.terrain.TerrainType;
 import org.pmw.tinylog.Logger;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 public class Chicken extends Animal implements Walker {
 
     private final ChickenRenderer chickenRenderer;
+    private final ArrayList<TerrainType> validTerrains = new ArrayList<TerrainType>();
+
     public Chicken(World world, Position position) {
         super(world, position, new Size());
         this.name = "Fox";
         this.chickenRenderer = new ChickenRenderer(2,2, new Size(28, 28));
+        validTerrains.add(TerrainType.WALKABLE);
+        validTerrains.add(TerrainType.FLYABLE);
     }
 
     @Override
@@ -37,7 +43,7 @@ public class Chicken extends Animal implements Walker {
 
         if (destination == null) {
             Logger.debug("No destination.");
-            MovementAi.generateRandomDestination(this);
+            MovementAi.generateRandomDestination(this, validTerrains);
         }
     }
 
