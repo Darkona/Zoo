@@ -11,7 +11,7 @@ public class Loop implements Runnable{
     private final Configuration configuration = Configuration.getInstance();
     private boolean running;
     private final double updateRate = 1.0d/configuration.getRate();
-    private final double renderRate = 1.0d/12.0d;
+    private final double renderRate = 1.0d/30.0d;
     private long nextStatTime;
     private int fps, ups;
 
@@ -36,10 +36,12 @@ public class Loop implements Runnable{
                 while(upsAcc > updateRate){
                     update();
                     upsAcc -= updateRate;
+
                 }
+                render();
             }
             if(fpsAcc > renderRate){
-                render();
+               //render();
                 fpsAcc = 0;
             }
             printStats();

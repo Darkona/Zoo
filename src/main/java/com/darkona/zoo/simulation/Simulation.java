@@ -27,6 +27,7 @@ public class Simulation {
     private Input input;
     private final int amountOfFoxes = 0;
 
+
     public Simulation(Size size) {
         int SCALE = Configuration.getInstance().getDisplayScale();
         input = new Input();

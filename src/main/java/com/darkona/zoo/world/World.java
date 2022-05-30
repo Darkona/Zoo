@@ -36,9 +36,9 @@ public class World implements Updatable, Renderable {
     public World(Size size) {
         this.size = size;
         this.field = new WorldCell[size.width][size.height];
-        this.worldCells = new ArrayList<>();
         this.updatables = new ArrayList<>();
         this.addedToWorld = new Stack<>();
+        this.worldCells = new ArrayList<>();
         for (int i = 0; i < field.length; i++) {
             WorldCell[] cells = field[i];
             for (int j = 0; j < cells.length; j++) {
@@ -155,9 +155,7 @@ public class World implements Updatable, Renderable {
 
     @Override
     public void render(Graphics graphics) {
-        Arrays
-                .stream(field).forEach(c -> Arrays
-                        .stream(c).forEach(d -> d.render(graphics)));
+        worldCells.forEach(cell -> cell.render(graphics));
     }
 
     @Override
@@ -176,8 +174,7 @@ public class World implements Updatable, Renderable {
                     }
                 });
 
-        Arrays .stream(field).forEach(c -> Arrays
-                        .stream(c).forEach(WorldCell::update));
+        worldCells.forEach(WorldCell::update);
     }
 
 }

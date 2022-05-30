@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         Logger.debug("Initializing...");
-        new Thread(new Loop(new Simulation(new Size(SQUARE, SQUARE)))).start();
+        new Thread(new Loop(new Simulation(new Size( Configuration.getInstance().getWidth(),  Configuration.getInstance().getHeight())))).start();
     }
 
     private static void configureTinyLog() {

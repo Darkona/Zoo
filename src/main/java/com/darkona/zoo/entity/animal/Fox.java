@@ -45,23 +45,22 @@ public class Fox extends Animal implements Walker {
 
         if (destination != null && !movements.isEmpty()) {
             move(world, destination);
-            if(position.equals(oldPos)) destination = null;
+            if(position.equals(oldPos))
+                destination = null;
         }
 
     }
 
     @Override
     public void render(Graphics graphics) {
-        if(renderer != null )renderer.render(graphics, this);
+        renderer.render(graphics, this);
     }
 
     @Override
     public void move(World world, Position destination) {
-        if (movements != null && !movements.isEmpty()) {
             Movement mov = movements.pop();
             position.translate(mov.getDx(), mov.getDy());
             world.moveAnimal(this, position);
-        }
     }
 
     @Override

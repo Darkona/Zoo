@@ -26,7 +26,7 @@ public class Display extends JFrame {
         add(canvas);
         pack();
 
-        canvas.createBufferStrategy(2);
+        canvas.createBufferStrategy(4);
         setLocationRelativeTo(null);
         setVisible(true);
     }

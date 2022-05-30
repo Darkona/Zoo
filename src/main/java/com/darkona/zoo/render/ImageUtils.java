@@ -12,6 +12,9 @@ import java.net.URL;
 import java.util.Objects;
 
 public class ImageUtils {
+
+    private static final int SCALE = Configuration.getInstance().getDisplayScale();
+
     public static Image loadImage(String filePath){
         Logger.debug("Loading image... " + filePath);
         try{
@@ -26,7 +29,7 @@ public class ImageUtils {
     }
 
     public static void drawImage(Image image, WorldThing thing, Graphics graphics, int u, int v, Size size){
-        int SCALE = Configuration.getInstance().getDisplayScale();
+
         int aX = thing.getPosition().x * SCALE;
         int aY = thing.getPosition().y * SCALE;
         int bX = aX + thing.getSize().width * SCALE;
